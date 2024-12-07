@@ -20,7 +20,7 @@ const ServiceHome = ({ category }) => {
     useEffect(() => {
         const fetchServicesData = async () => {
             try {
-                const response = await axios.get(`http://${ip}/moox_events/api/service/services`);
+                const response = await axios.get(`/moox_events/api/service/services`);
                 const data = response.data;
 
                 if (data.events) {

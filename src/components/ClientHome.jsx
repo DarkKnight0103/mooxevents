@@ -5,7 +5,7 @@ const ClientHome = ({ onDataLoaded }) => {
   const [clients, setClients] = useState([]); // State to store clients
   const [isLoading, setIsLoading] = useState(true); // Local loading state
   const ip = '192.168.1.110'; // Backend API IP address
-  const apiUrl = `http://${ip}:5000/moox_events/api/client/get-all-client`; // Backend API URL
+  const apiUrl = `:5000/moox_events/api/client/get-all-client`; // Backend API URL
 
   // Fetch clients from the API
   useEffect(() => {
