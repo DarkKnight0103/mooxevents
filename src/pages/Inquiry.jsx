@@ -40,7 +40,7 @@
 //   useEffect(() => {
 //     const fetchPurposes = async () => {
 //       try {
-//         const { data } = await axios.get(`/moox_events/api/service/get-active-services`);
+//         const { data } = await axios.get(`http://${ip}/moox_events/api/service/get-active-services`);
 //         setPurposes(data.services || []); // Assuming the response contains an array of services
 //       } catch (error) {
 //         console.error('Error fetching purposes:', error);
@@ -310,7 +310,7 @@ const Inquiry = () => {
   useEffect(() => {
     const fetchPurposes = async () => {
       try {
-        const { data } = await axios.get(`/moox_events/api/service/get-active-services`);
+        const { data } = await axios.get(`http://${ip}/moox_events/api/service/get-active-services`);
         // Map the fetched services to match the required format
         const serviceData = data.services.map(service => ({
           purpose_id: service._id,
@@ -360,7 +360,7 @@ const Inquiry = () => {
       
       try {
         // Make the API request to submit the form
-        const response = await axios.post(`/moox_events/api/enquiry/add-enquiry`, {
+        const response = await axios.post(`http://${ip}/moox_events/api/enquiry/add-enquiry`, {
           name: formData.name,
           mobileno: formData.mobile,
           email: formData.email,

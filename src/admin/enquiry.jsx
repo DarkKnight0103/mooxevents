@@ -22,7 +22,7 @@
 //     // Fetch the list of services dynamically
 //     const fetchServices = async () => {
 //         try {
-//             const { data } = await axios.get('/moox_events/api/service/get-active-services');
+//             const { data } = await axios.get(`http://${ip}/moox_events/api/service/get-active-services');
 //             setServices(data.services);
 //         } catch (error) {
 //             console.error('Error fetching services:', error.message);
@@ -34,7 +34,7 @@
 //         try {
 //             setLoading(true);
 //             const user_id = localStorage.getItem('userid');
-//             const response = await axios.post('/moox_events/api/enquiry/get-enquiry', { user_id });
+//             const response = await axios.post(`http://${ip}/moox_events/api/enquiry/get-enquiry', { user_id });
 //             setQueries(response.data.queries);
 //             setLoading(false);
 //         } catch (error) {
@@ -46,7 +46,7 @@
 //     const resolveQuery = async (query_id) => {
 //         try {
 //             const user_id = localStorage.getItem('userid');
-//             await axios.post('/moox_events/api/enquiry/change-enquiry-status', { event_id: query_id, user_id });
+//             await axios.post(`http://${ip}/moox_events/api/enquiry/change-enquiry-status', { event_id: query_id, user_id });
 //             alert('Query resolved successfully!');
 //             fetchQueries();
 //         } catch (error) {
@@ -75,7 +75,7 @@
 //         try {
 //             const { name, mobileno, email, purpose_id, purpose_name, message } = newQuery;
 //             const user_id = localStorage.getItem('userid');
-//             await axios.post('/moox_events/api/enquiry/add-enquiry', { name, mobileno, email, purpose_id, purpose_name, message, user_id });
+//             await axios.post(`http://${ip}/moox_events/api/enquiry/add-enquiry', { name, mobileno, email, purpose_id, purpose_name, message, user_id });
 //             alert('Query submitted successfully');
 //             setNewQuery({
 //                 name: '',
@@ -198,6 +198,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Enquiry = () => {
+    const ip = import.meta.env.VITE_IP;
     const [queries, setQueries] = useState([]);
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -218,7 +219,7 @@ const Enquiry = () => {
     // Fetch the list of services dynamically
     const fetchServices = async () => {
         try {
-            const { data } = await axios.get('/moox_events/api/service/get-active-services');
+            const { data } = await axios.get(`http://${ip}/moox_events/api/service/get-active-services`);
             setServices(data.services);
         } catch (error) {
             console.error('Error fetching services:', error.message);
@@ -230,7 +231,7 @@ const Enquiry = () => {
         try {
             setLoading(true);
             const user_id = localStorage.getItem('userid');
-            const response = await axios.post('/moox_events/api/enquiry/get-enquiry', { user_id });
+            const response = await axios.post(`http://${ip}/moox_events/api/enquiry/get-enquiry`, { user_id });
             setQueries(response.data.queries);
             setLoading(false);
         } catch (error) {
@@ -242,7 +243,7 @@ const Enquiry = () => {
     const resolveQuery = async (query_id) => {
         try {
             const user_id = localStorage.getItem('userid');
-            await axios.post('/moox_events/api/enquiry/change-enquiry-status', { event_id: query_id, user_id });
+            await axios.post(`http://${ip}/moox_events/api/enquiry/change-enquiry-status`, { event_id: query_id, user_id });
             alert('Query resolved successfully!');
             fetchQueries();
         } catch (error) {
@@ -271,7 +272,7 @@ const Enquiry = () => {
         try {
             const { name, mobileno, email, purpose_id, purpose_name, message } = newQuery;
             const user_id = localStorage.getItem('userid');
-            await axios.post('/moox_events/api/enquiry/add-enquiry', { name, mobileno, email, purpose_id, purpose_name, message, user_id });
+            await axios.post(`http://${ip}/moox_events/api/enquiry/add-enquiry`, { name, mobileno, email, purpose_id, purpose_name, message, user_id });
             alert('Query submitted successfully');
             setNewQuery({
                 name: '',

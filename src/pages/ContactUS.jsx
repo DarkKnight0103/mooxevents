@@ -71,7 +71,7 @@ const ContactUs = () => {
       setErrors({});
       
       // API endpoint for form submission
-      const apiUrl = `/moox_events/api/contactus/add-queries`;
+      const apiUrl = `http://${ip}/moox_events/api/contactus/add-queries`;
       
       try {
         const response = await fetch(apiUrl, {

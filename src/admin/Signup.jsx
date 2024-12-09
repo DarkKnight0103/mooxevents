@@ -3,6 +3,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 // import { signup } from '../api/auth';
 import axios from "axios";
 const Signup = () => {
+  const ip = import.meta.env.VITE_IP;
     const [formData, setFormData] = useState({
         name: '',
         mobile_no: '',
@@ -40,7 +41,7 @@ const Signup = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/moox_events/api/auth/add_admin', {
+            const response = await axios.post(`http://${ip}/moox_events/moox_events/api/auth/add_admin`, {
                 ...formData, recaptchaToken
             });
             setSuccessMessage(response.data.message);

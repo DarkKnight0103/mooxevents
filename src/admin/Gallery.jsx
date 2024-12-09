@@ -11,7 +11,7 @@
 //     useEffect(() => {
 //         const fetchClients = async () => {
 //             try {
-//                 const response = await axios.post('http://localhost:5000/moox_events/api/gallery/get-photos',{user_id:localStorage.getItem('userid')});
+//                 const response = await axios.post(`http://${ip}/moox_events/moox_events/api/gallery/get-photos',{user_id:localStorage.getItem('userid')});
 //                 setClients(response.data.clients);
 //             } catch (error) {
 //                 setMessage('Failed to fetch clients. ' + error.response?.data?.message || error.message);
@@ -48,7 +48,7 @@
 //         }
 //
 //         try {
-//             const response = await axios.post('http://localhost:5000/moox_events/api/gallery/add-photo', {
+//             const response = await axios.post(`http://${ip}/moox_events/moox_events/api/gallery/add-photo', {
 //                 name: formData.name,
 //                 active: true,
 //                 description:formData.description,
@@ -67,7 +67,7 @@
 //     // Toggle client active status
 //     const toggleStatus = async (clientId, currentStatus) => {
 //         try {
-//             const response = await axios.post('http://localhost:5000/moox_events/api/gallery/change-photo-status', {
+//             const response = await axios.post(`http://${ip}/moox_events/moox_events/api/gallery/change-photo-status', {
 //                 event_id:clientId,
 //                 user_id: localStorage.getItem('userid'),
 //                 status: !currentStatus,
@@ -178,6 +178,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const GalleryManagement = () => {
+    const ip = import.meta.env.VITE_IP;
     const [clients, setClients] = useState([]);
     const [formData, setFormData] = useState({ name: '', active: true, description: '', photo: '' });
     const [showPopup, setShowPopup] = useState(false);
@@ -186,7 +187,7 @@ const GalleryManagement = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const response = await axios.post('http://localhost:5000/moox_events/api/gallery/get-photos', { user_id: localStorage.getItem('userid') });
+                const response = await axios.post(`http://${ip}/moox_events/moox_events/api/gallery/get-photos`, { user_id: localStorage.getItem('userid') });
                 setClients(response.data.clients);
             } catch (error) {
                 setMessage('Failed to fetch clients. ' + (error.response?.data?.message || error.message));
@@ -220,7 +221,7 @@ const GalleryManagement = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/moox_events/api/gallery/add-photo', {
+            const response = await axios.post(`http://${ip}/moox_events/moox_events/api/gallery/add-photo`, {
                 name: formData.name,
                 active: true,
                 description: formData.description,
@@ -238,7 +239,7 @@ const GalleryManagement = () => {
 
     const toggleStatus = async (clientId, currentStatus) => {
         try {
-            const response = await axios.post('http://localhost:5000/moox_events/api/gallery/change-photo-status', {
+            const response = await axios.post(`http://${ip}/moox_events/moox_events/api/gallery/change-photo-status`, {
                 event_id: clientId,
                 user_id: localStorage.getItem('userid'),
                 status: !currentStatus,

@@ -16,6 +16,7 @@ const decryptData = (encryptedData) => {
 };
 
 const VerifyOTP = () => {
+  const ip = import.meta.env.VITE_IP;
     const [otpData, setOtpData] = useState({
         email: localStorage.getItem('emailid'),
         otp: '',
@@ -42,7 +43,7 @@ const VerifyOTP = () => {
 
             // Send the encrypted data to the backend
             const response = await axios.post(
-                'http://localhost:5000/moox_events/api/auth/verify-otp',
+                `http://${ip}/moox_events/moox_events/api/auth/verify-otp`,
                 { encryptedData }
             );
 

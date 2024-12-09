@@ -13,7 +13,7 @@
 //         try {
 //             setLoading(true);
 //             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-//             const response = await axios.post('/moox_events/api/contactus/get-queries', { user_id });
+//             const response = await axios.post(`http://${ip}/moox_events/api/contactus/get-queries', { user_id });
 //             setQueries(response.data.queries);
 //             setLoading(false);
 //         } catch (error) {
@@ -25,7 +25,7 @@
 //     const resolveQuery = async (event_id) => {
 //         try {
 //             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-//             await axios.post('/moox_events/api/contactus/change-query-status', { event_id, user_id });
+//             await axios.post(`http://${ip}/moox_events/api/contactus/change-query-status', { event_id, user_id });
 //             alert('Query resolved successfully!');
 //             fetchQueries(); // Refresh the queries
 //         } catch (error) {
@@ -110,6 +110,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const ContactUs = () => {
+    const ip = import.meta.env.VITE_IP;
     const [queries, setQueries] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -121,7 +122,7 @@ const ContactUs = () => {
         try {
             setLoading(true);
             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-            const response = await axios.post('/moox_events/api/contactus/get-queries', { user_id });
+            const response = await axios.post(`http://${ip}/moox_events/api/contactus/get-queries`, { user_id });
             setQueries(response.data.queries);
             setLoading(false);
         } catch (error) {
@@ -133,7 +134,7 @@ const ContactUs = () => {
     const resolveQuery = async (event_id) => {
         try {
             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-            await axios.post('/moox_events/api/contactus/change-query-status', { event_id, user_id });
+            await axios.post(`http://${ip}/moox_events/api/contactus/change-query-status`, { event_id, user_id });
             alert('Query resolved successfully!');
             fetchQueries(); // Refresh the queries
         } catch (error) {

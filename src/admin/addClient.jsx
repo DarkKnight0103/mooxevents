@@ -11,7 +11,7 @@
 //     useEffect(() => {
 //         const fetchClients = async () => {
 //             try {
-//                 const response = await axios.post('http://localhost:5000/moox_events/api/client/get-client',{user_id:localStorage.getItem('userid')});
+//                 const response = await axios.post(`http://${ip}/moox_events/moox_events/api/client/get-client',{user_id:localStorage.getItem('userid')});
 //                 setClients(response.data.clients);
 //             } catch (error) {
 //                 setMessage('Failed to fetch clients. ' + error.response?.data?.message || error.message);
@@ -48,7 +48,7 @@
 //         }
 //
 //         try {
-//             const response = await axios.post('http://localhost:5000/moox_events/api/client/add-client', {
+//             const response = await axios.post(`http://${ip}/moox_events/moox_events/api/client/add-client', {
 //                 name: formData.name,
 //                 active: true,
 //                 user_id:localStorage.getItem('userid'),
@@ -66,7 +66,7 @@
 //     // Toggle client active status
 //     const toggleStatus = async (clientId, currentStatus) => {
 //         try {
-//             const response = await axios.post('http://localhost:5000/moox_events/api/client/change-client-status', {
+//             const response = await axios.post(`http://${ip}/moox_events/moox_events/api/client/change-client-status', {
 //                 event_id:clientId,
 //                 user_id: localStorage.getItem('userid'),
 //                 status: !currentStatus,
@@ -173,6 +173,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const ClientManagement = () => {
+    const ip = import.meta.env.VITE_IP;
     const [clients, setClients] = useState([]);
     const [formData, setFormData] = useState({ name: '', active: true, photo: '' });
     const [showPopup, setShowPopup] = useState(false);
@@ -183,7 +184,7 @@ const ClientManagement = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const response = await axios.post('http://localhost:5000/moox_events/api/client/get-client', { user_id: localStorage.getItem('userid') });
+                const response = await axios.post(`http://${ip}/moox_events/api/client/get-client`, { user_id: localStorage.getItem('userid') });
                 setClients(response.data.clients);
             } catch (error) {
                 setMessage('Failed to fetch clients. ' + error.response?.data?.message || error.message);
@@ -220,7 +221,7 @@ const ClientManagement = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/moox_events/api/client/add-client', {
+            const response = await axios.post(`http://${ip}/moox_events/api/client/add-client`, {
                 name: formData.name,
                 active: true,
                 user_id: localStorage.getItem('userid'),
@@ -238,7 +239,7 @@ const ClientManagement = () => {
     // Toggle client active status
     const toggleStatus = async (clientId, currentStatus) => {
         try {
-            const response = await axios.post('http://localhost:5000/moox_events/api/client/change-client-status', {
+            const response = await axios.post(`http://${ip}/moox_events/api/client/change-client-status`, {
                 event_id: clientId,
                 user_id: localStorage.getItem('userid'),
                 status: !currentStatus,

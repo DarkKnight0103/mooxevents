@@ -20,7 +20,7 @@
 //                 alert('User not authenticated.');
 //                 return;
 //             }
-//             const { data } = await axios.post('/moox_events/api/event/get-events', { user_id });
+//             const { data } = await axios.post(`http://${ip}/moox_events/api/event/get-events', { user_id });
 //             setEvents(data.events);
 //         } catch (error) {
 //             console.error('Error fetching events:', error);
@@ -30,7 +30,7 @@
 //     // Fetch active services for dropdown
 //     const fetchServices = async () => {
 //         try {
-//             const { data } = await axios.get('/moox_events/api/service/get-active-services');
+//             const { data } = await axios.get(`http://${ip}/moox_events/api/service/get-active-services');
 //             setServices(data.services);
 //         } catch (error) {
 //             console.error('Error fetching services:', error);
@@ -46,7 +46,7 @@
 //                 return;
 //             }
 //             const formData = { ...newEvent, user_id, photo: newEvent.photo.split(',')[1] };
-//             await axios.post('/moox_events/api/event/add-event', formData);
+//             await axios.post(`http://${ip}/moox_events/api/event/add-event', formData);
 //             fetchEvents();
 //         } catch (error) {
 //             console.error('Error adding event:', error);
@@ -61,7 +61,7 @@
 //                 alert('User not authenticated.');
 //                 return;
 //             }
-//             await axios.post('/moox_events/api/event/change-event-status', { event_id: id, status: !status, user_id });
+//             await axios.post(`http://${ip}/moox_events/api/event/change-event-status', { event_id: id, status: !status, user_id });
 //             fetchEvents();
 //         } catch (error) {
 //             console.error('Error toggling event status:', error);
@@ -151,6 +151,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const EventManagement = () => {
+    const ip = import.meta.env.VITE_IP;
     const [events, setEvents] = useState([]);
     const [services, setServices] = useState([]);
     const [newEvent, setNewEvent] = useState({
@@ -168,7 +169,7 @@ const EventManagement = () => {
                 alert('User not authenticated.');
                 return;
             }
-            const { data } = await axios.post('/moox_events/api/event/get-events', { user_id });
+            const { data } = await axios.post(`http://${ip}/moox_events/api/event/get-events`, { user_id });
             setEvents(data.events);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -177,7 +178,7 @@ const EventManagement = () => {
 
     const fetchServices = async () => {
         try {
-            const { data } = await axios.get('/moox_events/api/service/get-active-services');
+            const { data } = await axios.get(`http://${ip}/moox_events/api/service/get-active-services`);
             setServices(data.services);
         } catch (error) {
             console.error('Error fetching services:', error);
@@ -192,7 +193,7 @@ const EventManagement = () => {
                 return;
             }
             const formData = { ...newEvent, user_id, photo: newEvent.photo.split(',')[1] };
-            await axios.post('/moox_events/api/event/add-event', formData);
+            await axios.post(`http://${ip}/moox_events/api/event/add-event`, formData);
             fetchEvents();
         } catch (error) {
             console.error('Error adding event:', error);
@@ -206,7 +207,7 @@ const EventManagement = () => {
                 alert('User not authenticated.');
                 return;
             }
-            await axios.post('/moox_events/api/event/change-event-status', { event_id: id, status: !status, user_id });
+            await axios.post(`http://${ip}/moox_events/api/event/change-event-status`, { event_id: id, status: !status, user_id });
             fetchEvents();
         } catch (error) {
             console.error('Error toggling event status:', error);

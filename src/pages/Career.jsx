@@ -26,7 +26,7 @@ const Career = () => {
   useEffect(() => {
     const fetchPositions = async () => {
       try {
-        const response = await axios.post(`/moox_events/api/career/jobs`);
+        const response = await axios.post(`http://${ip}/moox_events/api/career/jobs`);
         const data = response.data;
 
         // Log the response to verify the format
@@ -80,7 +80,7 @@ const Career = () => {
     // Here you would send the application data to your backend
     // Example POST request
     try {
-      const response = await fetch(`/moox_events/api/career/apply`, {
+      const response = await fetch(`http://${ip}/moox_events/api/career/apply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ const ENCRYPTION_KEY = "a76e9f32c4a0a9e7r8y5g6r4e8f9g6dgb271f51aa9785d29a3b1d4a7
 
 // Utility functions for encryption and decryption
 const encryptData = (data) => {
+
     return CryptoJS.AES.encrypt(JSON.stringify(data), ENCRYPTION_KEY).toString();
 };
 
@@ -16,6 +17,7 @@ const decryptData = (encryptedData) => {
 };
 
 const Login = () => {
+  const ip = import.meta.env.VITE_IP;
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
@@ -56,7 +58,7 @@ const Login = () => {
 
             // Send encrypted data to backend
 
-            const response = await axios.post('/moox_events/api/auth/login', {
+            const response = await axios.post(`http://${ip}/moox_events/api/auth/login`, {
                 encryptedData
             });
 
