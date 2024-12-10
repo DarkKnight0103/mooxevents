@@ -13,7 +13,7 @@
 //         try {
 //             setLoading(true);
 //             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-//             const response = await axios.post(`http://${ip}/moox_events/api/contactus/get-queries', { user_id });
+//             const response = await axios.post(`${ip}/moox_events/api/contactus/get-queries', { user_id });
 //             setQueries(response.data.queries);
 //             setLoading(false);
 //         } catch (error) {
@@ -25,7 +25,7 @@
 //     const resolveQuery = async (event_id) => {
 //         try {
 //             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-//             await axios.post(`http://${ip}/moox_events/api/contactus/change-query-status', { event_id, user_id });
+//             await axios.post(`${ip}/moox_events/api/contactus/change-query-status', { event_id, user_id });
 //             alert('Query resolved successfully!');
 //             fetchQueries(); // Refresh the queries
 //         } catch (error) {
@@ -122,7 +122,7 @@ const ContactUs = () => {
         try {
             setLoading(true);
             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-            const response = await axios.post(`http://${ip}/moox_events/api/contactus/get-queries`, { user_id });
+            const response = await axios.post(`${ip}/moox_events/api/contactus/get-queries`, { user_id });
             setQueries(response.data.queries);
             setLoading(false);
         } catch (error) {
@@ -134,7 +134,7 @@ const ContactUs = () => {
     const resolveQuery = async (event_id) => {
         try {
             const user_id = localStorage.getItem('userid'); // Replace with actual user ID
-            await axios.post(`http://${ip}/moox_events/api/contactus/change-query-status`, { event_id, user_id });
+            await axios.post(`${ip}/moox_events/api/contactus/change-query-status`, { event_id, user_id });
             alert('Query resolved successfully!');
             fetchQueries(); // Refresh the queries
         } catch (error) {

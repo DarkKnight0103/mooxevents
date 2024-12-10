@@ -58,7 +58,7 @@ const Login = () => {
 
             // Send encrypted data to backend
 
-            const response = await axios.post(`http://${ip}/moox_events/api/auth/login`, {
+            const response = await axios.post(`${ip}/moox_events/api/auth/login`, {
                 encryptedData
             });
 

@@ -15,7 +15,7 @@
 //                 alert('User not authenticated.');
 //                 return;
 //             }
-//             const { data } = await axios.post(`http://${ip}/moox_events/api/career/all', { user_id });
+//             const { data } = await axios.post(`${ip}/moox_events/api/career/all', { user_id });
 //             setPositions(data.events);
 //         } catch (error) {
 //             console.error('Error fetching positions:', error);
@@ -31,7 +31,7 @@
 //                 alert('User not authenticated.');
 //                 return;
 //             }
-//             await axios.post(`http://${ip}/moox_events/api/career/toggle`, { user_id ,id});
+//             await axios.post(`${ip}/moox_events/api/career/toggle`, { user_id ,id});
 //             fetchPositions();
 //         } catch (error) {
 //             console.error('Error toggling position status:', error);
@@ -47,7 +47,7 @@
 //                 alert('User not authenticated.');
 //                 return;
 //             }
-//             const { data } = await axios.post(`http://${ip}/moox_events/api/career/applications`, { user_id,position_id:positionId });
+//             const { data } = await axios.post(`${ip}/moox_events/api/career/applications`, { user_id,position_id:positionId });
 //             setApplications(data);
 //             setSelectedPosition(positionId);
 //         } catch (error) {
@@ -68,7 +68,7 @@
 //                 alert('Please fill in all fields.');
 //                 return;
 //             }
-//             await axios.post(`http://${ip}/moox_events/api/career/add-position', { ...newPosition, user_id });
+//             await axios.post(`${ip}/moox_events/api/career/add-position', { ...newPosition, user_id });
 //             fetchPositions();
 //             setNewPosition({ position_name: '', description: '', requirements: '',location:'' });
 //         } catch (error) {
@@ -175,7 +175,7 @@ const CareerManagement = () => {
                 alert('User not authenticated.');
                 return;
             }
-            const { data } = await axios.post(`http://${ip}/moox_events/api/career/all`, { user_id });
+            const { data } = await axios.post(`${ip}/moox_events/api/career/all`, { user_id });
             setPositions(data.events);
         } catch (error) {
             console.error('Error fetching positions:', error);
@@ -190,7 +190,7 @@ const CareerManagement = () => {
                 alert('User not authenticated.');
                 return;
             }
-            await axios.post(`http://${ip}/moox_events/api/career/toggle`, { user_id, id });
+            await axios.post(`${ip}/moox_events/api/career/toggle`, { user_id, id });
             fetchPositions();
         } catch (error) {
             console.error('Error toggling position status:', error);
@@ -205,7 +205,7 @@ const CareerManagement = () => {
                 alert('User not authenticated.');
                 return;
             }
-            const { data } = await axios.post(`http://${ip}/moox_events/api/career/applications`, { user_id, position_id: positionId });
+            const { data } = await axios.post(`${ip}/moox_events/api/career/applications`, { user_id, position_id: positionId });
             setApplications(data);
             setSelectedPosition(positionId);
         } catch (error) {
@@ -225,7 +225,7 @@ const CareerManagement = () => {
                 alert('Please fill in all fields.');
                 return;
             }
-            await axios.post(`http://${ip}/moox_events/api/career/add-position`, { ...newPosition, user_id });
+            await axios.post(`${ip}/moox_events/api/career/add-position`, { ...newPosition, user_id });
             fetchPositions();
             setNewPosition({ position_name: '', description: '', location: '', requirements: '' });
         } catch (error) {

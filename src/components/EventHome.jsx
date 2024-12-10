@@ -6,7 +6,7 @@ const EventHome = ({ onDataLoaded }) => {
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const limit = 4; // Limit to 4 cards
   const ip = import.meta.env.VITE_IP;
-  const apiUrl = `http://${ip}/moox_events/api/event/get-all-events`;
+  const apiUrl = `${ip}/moox_events/api/event/get-all-events`;
 
   // Fetch events from the API
   useEffect(() => {

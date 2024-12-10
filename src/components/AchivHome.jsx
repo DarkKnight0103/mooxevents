@@ -12,7 +12,7 @@
 //     // Fetching achievements data from the API
 //     const fetchAchievements = async () => {
 //       try {
-//         const response = await axios.post(`http://${ip}/moox_events/api/achievements/get-all-achievements`);
+//         const response = await axios.post(`${ip}/moox_events/api/achievements/get-all-achievements`);
 //         const data = await response.data.events;
 //         console.log(data.events);  
 //         if (data && Array.isArray(data)) {
@@ -82,7 +82,7 @@ const AchivHome = () => {
   useEffect(() => {
     const fetchAchievements = async () => {
       try {
-        const response = await axios.post(`http://${ip}/moox_events/api/achievements/get-all-achievements`);
+        const response = await axios.post(`${ip}/moox_events/api/achievements/get-all-achievements`);
         const data = response.data.events;
         if (data && Array.isArray(data)) {
           setProfiles(data);

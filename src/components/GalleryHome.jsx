@@ -22,7 +22,7 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await axios.post(`http://${ip}/moox_events/api/gallery/get-all-photos`);
+        const response = await axios.post(`${ip}/moox_events/api/gallery/get-all-photos`);
         const data = response.data;
 
         if (data.clients) {

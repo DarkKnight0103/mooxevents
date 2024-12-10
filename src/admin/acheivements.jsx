@@ -18,7 +18,7 @@
 //                 alert('User not authenticated.');
 //                 return;
 //             }
-//             const { data } = await axios.post(`http://${ip}/moox_events/api/achievements/get-achievements', { user_id });
+//             const { data } = await axios.post(`${ip}/moox_events/api/achievements/get-achievements', { user_id });
 //             setAchievements(data.events);
 //         } catch (error) {
 //             console.error('Error fetching achievements:', error);
@@ -40,7 +40,7 @@
 //                 photo: newAchievement.photo.split(',')[1] // Extract base64 string
 //             };
 //
-//             await axios.post(`http://${ip}/moox_events/api/achievements/add-achievements', formData);
+//             await axios.post(`${ip}/moox_events/api/achievements/add-achievements', formData);
 //             fetchAchievements(); // Refresh achievements
 //             alert('Achievement added successfully!');
 //         } catch (error) {
@@ -56,7 +56,7 @@
 //                 alert('User not authenticated.');
 //                 return;
 //             }
-//             await axios.post(`http://${ip}/moox_events/api/achievements/change-achievements-status', { event_id: id, status: !status, user_id });
+//             await axios.post(`${ip}/moox_events/api/achievements/change-achievements-status', { event_id: id, status: !status, user_id });
 //             fetchAchievements();
 //         } catch (error) {
 //             console.error('Error toggling achievement status:', error);
@@ -154,7 +154,7 @@ const AchievementsManagement = () => {
                 alert('User not authenticated.');
                 return;
             }
-            const { data } = await axios.post(`http://${ip}/moox_events/api/achievements/get-achievements`, { user_id });
+            const { data } = await axios.post(`${ip}/moox_events/api/achievements/get-achievements`, { user_id });
             setAchievements(data.events);
         } catch (error) {
             console.error('Error fetching achievements:', error);
@@ -176,7 +176,7 @@ const AchievementsManagement = () => {
                 photo: newAchievement.photo.split(',')[1] // Extract base64 string
             };
 
-            await axios.post(`http://${ip}/moox_events/api/achievements/add-achievements`, formData);
+            await axios.post(`${ip}/moox_events/api/achievements/add-achievements`, formData);
             fetchAchievements(); // Refresh achievements
             alert('Achievement added successfully!');
         } catch (error) {
@@ -192,7 +192,7 @@ const AchievementsManagement = () => {
                 alert('User not authenticated.');
                 return;
             }
-            await axios.post(`http://${ip}/moox_events/api/achievements/change-achievements-status`, { event_id: id, status: !status, user_id });
+            await axios.post(`${ip}/moox_events/api/achievements/change-achievements-status`, { event_id: id, status: !status, user_id });
             fetchAchievements();
         } catch (error) {
             console.error('Error toggling achievement status:', error);

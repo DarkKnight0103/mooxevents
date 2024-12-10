@@ -5,7 +5,7 @@ const ClientHome = ({ onDataLoaded }) => {
   const ip = import.meta.env.VITE_IP;
   const [clients, setClients] = useState([]); // State to store clients
   const [isLoading, setIsLoading] = useState(true); // Local loading state
-  const apiUrl = `http://${ip}/moox_events/api/client/get-all-client`; // Backend API URL
+  const apiUrl = `${ip}/moox_events/api/client/get-all-client`; // Backend API URL
 
   // Fetch clients from the API
   useEffect(() => {

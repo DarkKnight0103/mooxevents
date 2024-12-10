@@ -18,7 +18,7 @@
 //     // Fetch members (active and all)
 //     const fetchMembers = async () => {
 //         try {
-//             const response = await axios.post(`http://${ip}/moox_events/api/team/get-all-member', { user_id: localStorage.getItem('userid') });
+//             const response = await axios.post(`${ip}/moox_events/api/team/get-all-member', { user_id: localStorage.getItem('userid') });
 //             setMembers(response.data.events);
 //             setLoading(false);
 //         } catch (error) {
@@ -28,7 +28,7 @@
 //
 //     const fetchActiveMembers = async () => {
 //         try {
-//             const response = await axios.post(`http://${ip}/moox_events/api/team/get-active-members');
+//             const response = await axios.post(`${ip}/moox_events/api/team/get-active-members');
 //             setActiveMembers(response.data.events);
 //         } catch (error) {
 //             console.error('Error fetching active members:', error);
@@ -61,7 +61,7 @@
 //     const handleAddMember = async (e) => {
 //         e.preventDefault();
 //         try {
-//             await axios.post(`http://${ip}/moox_events/api/team/add-member', {...newMember,user_id:localStorage.getItem('userid')});
+//             await axios.post(`${ip}/moox_events/api/team/add-member', {...newMember,user_id:localStorage.getItem('userid')});
 //             fetchMembers(); // Refresh the member list after adding
 //             alert('Member added successfully');
 //         } catch (error) {
@@ -72,7 +72,7 @@
 //     // Toggle member status
 //     const handleToggleStatus = async (event_id, status) => {
 //         try {
-//             await axios.post(`http://${ip}/moox_events/api/team/change-member-status', {
+//             await axios.post(`${ip}/moox_events/api/team/change-member-status', {
 //                 event_id,
 //                 status,
 //                 user_id: localStorage.getItem('userid'),
@@ -175,7 +175,7 @@ const TeamManagement = () => {
     // Fetch members (active and all)
     const fetchMembers = async () => {
         try {
-            const response = await axios.post(`http://${ip}/moox_events/api/team/get-all-member`, { user_id: localStorage.getItem('userid') });
+            const response = await axios.post(`${ip}/moox_events/api/team/get-all-member`, { user_id: localStorage.getItem('userid') });
             setMembers(response.data.events);
             setLoading(false);
         } catch (error) {
@@ -185,7 +185,7 @@ const TeamManagement = () => {
 
     const fetchActiveMembers = async () => {
         try {
-            const response = await axios.post(`http://${ip}/moox_events/api/team/get-active-members`);
+            const response = await axios.post(`${ip}/moox_events/api/team/get-active-members`);
             setActiveMembers(response.data.events);
         } catch (error) {
             console.error('Error fetching active members:', error);
@@ -218,7 +218,7 @@ const TeamManagement = () => {
     const handleAddMember = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`http://${ip}/moox_events/api/team/add-member`, {...newMember,user_id:localStorage.getItem('userid')});
+            await axios.post(`${ip}/moox_events/api/team/add-member`, {...newMember,user_id:localStorage.getItem('userid')});
             fetchMembers(); // Refresh the member list after adding
             alert('Member added successfully');
         } catch (error) {
@@ -229,7 +229,7 @@ const TeamManagement = () => {
     // Toggle member status
     const handleToggleStatus = async (event_id, status) => {
         try {
-            await axios.post(`http://${ip}/moox_events/api/team/change-member-status`, {
+            await axios.post(`${ip}/moox_events/api/team/change-member-status`, {
                 event_id,
                 status,
                 user_id: localStorage.getItem('userid'),
