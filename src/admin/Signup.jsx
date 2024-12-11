@@ -48,7 +48,7 @@ const Signup = () => {
 
             if (response.data.message == "Signup successful. Verify OTP sent to your email.") {
                 localStorage.setItem('emailid', formData.email);
-                window.location.href = '/verify-otp';
+                window.location.href = '/admin/verify';
             } else {
                 window.location.reload();
             }
