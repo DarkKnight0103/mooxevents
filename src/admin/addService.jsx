@@ -15,7 +15,7 @@
 //         const fetchServices = async () => {
 //             try {
 //                 const userId = localStorage.getItem('userid');
-//                 const response = await axios.post(`${ip}/moox_events/moox_events/api/service/get-service', {
+//                 const response = await axios.post(`${ip}/moox_events/api/service/get-service', {
 //                     user_id: userId,
 //                 });
 //                 setServices(response.data.events);
@@ -53,7 +53,7 @@
 //
 //         try {
 //             const userId = localStorage.getItem('userid');
-//             const response = await axios.post(`${ip}/moox_events/moox_events/api/service/add-service', {
+//             const response = await axios.post(`${ip}/moox_events/api/service/add-service', {
 //                 user_id: userId,
 //                 name: formData.name,
 //                 description: formData.description,
@@ -70,7 +70,7 @@
 //     const handleStatusChange = async (serviceId, currentStatus) => {
 //         try {
 //             const userId = localStorage.getItem('userid');
-//             const response = await axios.post(`${ip}/moox_events/moox_events/api/service/change-service-status', {
+//             const response = await axios.post(`${ip}/moox_events/api/service/change-service-status', {
 //                 event_id: serviceId,
 //                 status: !currentStatus, // Toggle the status
 //                 user_id: userId,
@@ -164,7 +164,7 @@ const AddService = () => {
         const fetchServices = async () => {
             try {
                 const userId = localStorage.getItem('userid');
-                const response = await axios.post(`${ip}/moox_events/moox_events/api/service/get-service`, {
+                const response = await axios.post(`${ip}/moox_events/api/service/get-service`, {
                     user_id: userId,
                 });
                 setServices(response.data.events);
@@ -202,7 +202,7 @@ const AddService = () => {
 
         try {
             const userId = localStorage.getItem('userid');
-            const response = await axios.post(`${ip}/moox_events/moox_events/api/service/add-service`, {
+            const response = await axios.post(`${ip}/moox_events/api/service/add-service`, {
                 user_id: userId,
                 name: formData.name,
                 description: formData.description,
@@ -219,7 +219,7 @@ const AddService = () => {
     const handleStatusChange = async (serviceId, currentStatus) => {
         try {
             const userId = localStorage.getItem('userid');
-            const response = await axios.post(`${ip}/moox_events/moox_events/api/service/change-service-status`, {
+            const response = await axios.post(`${ip}/moox_events/api/service/change-service-status`, {
                 event_id: serviceId,
                 status: !currentStatus,
                 user_id: userId,

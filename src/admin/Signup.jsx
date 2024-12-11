@@ -41,7 +41,7 @@ const Signup = () => {
         }
 
         try {
-            const response = await axios.post(`${ip}/moox_events/moox_events/api/auth/add_admin`, {
+            const response = await axios.post(`${ip}/moox_events/api/auth/add_admin`, {
                 ...formData, recaptchaToken
             });
             setSuccessMessage(response.data.message);

@@ -43,7 +43,7 @@ const VerifyOTP = () => {
 
             // Send the encrypted data to the backend
             const response = await axios.post(
-                `${ip}/moox_events/moox_events/api/auth/verify-otp`,
+                `${ip}/moox_events/api/auth/verify-otp`,
                 { encryptedData }
             );
 
