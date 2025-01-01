@@ -480,7 +480,7 @@ const Menu = () => {
       {/* Hamburger Menu Button */}
       <div
         className={`fixed z-50 px-5 py-1 md:px-10 md:py-1 flex justify-between items-center w-full transition duration-300 ${
-          isScrolled ? "backdrop-blur" : "" // Add blur only when scrolled
+          isScrolled ? "" : "" // Add blur only when scrolled
         }`}
       >
         <div className="w-full flex items-start z-10">

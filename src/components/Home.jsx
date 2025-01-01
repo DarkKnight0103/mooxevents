@@ -64,6 +64,8 @@ import HomeSlider from "./HomeSlider";
 import AchivHome from "./AchivHome";
 import TeamHome from "./TeamHome";
 import ClientHome from "./ClientHome";
+import About from "./About";
+import Services from "./Services";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -173,10 +175,11 @@ const Home = () => {
 
         {/* <div className="h-screen"></div> */}
 <HomeSlider />
+
         {/* ABOUT US SECTION */}
-        <div className="w-full md:h-screen h-auto flex items-center justify-center py-16">
-          <div className="text-center w-full max-w-3xl">
-            {/* ABOUT US Heading */}
+        {/* <div className="h-auto flex items-center justify-center py-16">
+          <div className="text-center w-full">
+
             <div
               id="about-heading"
               className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000 ${
@@ -186,31 +189,17 @@ const Home = () => {
               ABOUT US
             </div>
 
-            {/* Horizontal line animation */}
-            <div
-              className={`mt-4 w-10 md:w-20 mx-auto h-1 bg-gray-500 transform transition-all duration-1000 ${
-                headingInView ? 'animate-widthExpand' : 'opacity-0'
-              }`}
-            ></div>
 
-            {/* Description Section */}
-            <div
-              id="about-description"
-              className={`mt-8 w-[80%] md:w-auto text-lg text-gray-700 mx-auto leading-relaxed opacity-0 transform transition-all duration-1000 ${
-                descriptionInView ? 'animate-fadeInUp' : ''
-              }`}
-            >
-              Moox Events Pvt. Ltd. is a Rajkot, Gujarat-based event management & wedding planning company dedicated to providing customers with a wide assortment of event management services for all sorts of corporate and personal events. Be it live shows, celebrity events, entertainment events, star nights, product launches, theme parties, wedding events, birthdays, anniversaries, Baby showers, corporate events, meet-ups, and many more…
-              <br /><br />
-              Our trained and skilled event planners have the right expertise to make your event more spectacular with full-time experience in the event management & Wedding Planning industry. We are serving our customers with the best possible services delivered at the best possible rates. We provide out-of-the-box and innovative ideas for 100% client satisfaction.
-            </div>
           </div>
-        </div>
+        </div> */}
+          <About />
+
+        <Services />
 
         {/* OUR SERVICES SECTION */}
-        <div className="w-full py-16">
+        {/* <div className="w-full py-16">
           <div className="text-center w-full max-w-3xl mx-auto">
-            {/* Our Services Heading */}
+
             <div
               id="services-heading"
               className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000 ${
@@ -221,7 +210,7 @@ const Home = () => {
             </div>
             
 
-            {/* Horizontal line animation */}
+
             <div
               className={`mt-4 w-10 md:w-20 mx-auto h-1 bg-gray-500 transform transition-all duration-1000 ${
                 servicesInView ? 'animate-widthExpand' : 'opacity-0'
@@ -232,7 +221,7 @@ const Home = () => {
     </p>
           </div>
           <ServiceHome />
-        </div>
+        </div> */}
 
         {/* GALLERY */}
         <div className="w-full py-16">

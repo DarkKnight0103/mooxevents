@@ -272,7 +272,6 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Loader from '../components/Loader';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
 
 const Inquiry = () => {
     const ip = import.meta.env.VITE_IP;

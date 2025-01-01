@@ -106,7 +106,7 @@ const Footer = () => {
         </div>
 
         {/* Middle Section (Navigation and Social Links) */}
-        <div className="bg-gray-700 py-8 md:rounded-full rounded-lg mt-3">
+        <div className="bg-gray-700 py-8 md:rounded-full rounded-lg mt-5">
           <div className="mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center">
             {/* Navigation Links */}
             <div className="flex flex-col md:flex-row gap-8 justify-center mb-6 md:mb-0">
