@@ -1,40 +1,58 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Loader2, ZoomIn } from "lucide-react";
+import { X, Loader2, ZoomIn } from "lucide-react";
 
-const GalleryHome = ({ onGalleryLoadComplete }) => {
+const GalleryPage = ({ onGalleryLoadComplete }) => {
   const [modalContent, setModalContent] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [galleryItems, setGalleryItems] = useState([]);
+  const [categories, setCategories] = useState(["All categories"]);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState("All categories");
   const ip = import.meta.env.VITE_IP;
 
   const openModal = (content) => {
     setModalContent(content);
     setModalOpen(true);
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setModalOpen(false);
     setModalContent(null);
-    document.body.style.overflow = "unset";
+    document.body.style.overflow = 'unset';
+  };
+
+  // New function to format category name
+  const formatCategoryName = (str) => {
+    if (!str) return "";
+    return str.replace(/([A-Z])/g, ' $1').trim();
   };
 
   useEffect(() => {
     const fetchGalleryItems = async () => {
       try {
-        const response = await axios.post(
-          `${ip}/moox_events/api/gallery/get-all-photos`
-        );
+        const response = await axios.post(`${ip}/moox_events/api/gallery/get-all-photos`);
         const data = response.data;
-        console.log("Gallery items:",data);
 
         if (data.clients) {
+          const uniqueCategories = new Set(
+            data.clients
+              .map(client => {
+                const firstWord = client.description?.split(' ')[0];
+                return firstWord ? formatCategoryName(firstWord) : null;
+              })
+              .filter(Boolean)
+          );
+          
+          setCategories(["All categories", ...Array.from(uniqueCategories)]);
+
           const items = data.clients.map((client) => ({
             type: client.logo ? "image" : "video",
             src: client.logo,
+            category: formatCategoryName(client.description?.split(' ')[0])
           }));
+
           setGalleryItems(items);
           setLoading(false);
           if (onGalleryLoadComplete) {
@@ -50,26 +68,42 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
     fetchGalleryItems();
   }, [onGalleryLoadComplete]);
 
-  // Split items into columns for masonry layout
-  const columns = {
-    sm: 2,
-    md: 3,
-    lg: 4,
-  };
+  const filteredItems = activeCategory === "All categories" 
+    ? galleryItems 
+    : galleryItems.filter(item => item.category === activeCategory);
 
+  // Split items into columns for masonry layout
   const getColumns = () => {
-    const columnArrays = Array.from({ length: columns.lg }, () => []);
-    galleryItems.forEach((item, index) => {
-      columnArrays[index % columns.lg].push(item);
+    const columns = Array.from({ length: 4 }, () => []);
+    filteredItems.forEach((item, index) => {
+      columns[index % 4].push(item);
     });
-    return columnArrays;
+    return columns;
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-8 lg:px-10 lg:py-16">
+      {/* Category Filters */}
+      <div className="flex items-center justify-center py-4 lg:py-8 flex-wrap">
+        {categories.map((category) => (
+          <button
+            key={category}
+            type="button"
+            onClick={() => setActiveCategory(category)}
+            className={`${
+              activeCategory === category
+                ? "bg-moox-navy border-2 dark:border-moox-navy dark:text-white dark:hover:bg-[#DBAF76]"
+                : "dark:text-moox-navy dark:border-moox-navy dark:border-2 dark:hover:bg-[#DBAF76] dark:hover:text-white dark:hover:border-moox-navy  dark:hover:border-2"
+            } border focus:outline-none focus:ring-gray-300 rounded-full text-base lg:text-base font-medium px-3 py-1.5 lg:px-5 lg:py-2.5 text-center me-2 lg:me-3 mb-3 dark:focus:ring-gray-800`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
-        <div className="flex items-center justify-center min-h-[200px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#DBAF76]"></div>
+        <div className="flex justify-center items-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-600" />
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -78,7 +112,7 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
               {column.map((item, itemIndex) => (
                 <div
                   key={`${columnIndex}-${itemIndex}`}
-                  className="relative group cursor-pointer animate-photoAppear break-inside-avoid"
+                  className="relative group cursor-pointer break-inside-avoid"
                   onClick={() => openModal(item)}
                 >
                   {item.type === "image" ? (
@@ -112,12 +146,12 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div
+        <div 
           className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={closeModal}
         >
-          <div
-            className="relative max-w-5xl w-full animate-modalEntry"
+          <div 
+            className="relative max-w-xl w-full animate-modalEntry"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -125,7 +159,7 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
               className="absolute -top-12 right-0 p-2 text-white/70 hover:text-white transition-colors duration-200"
             >
             </button>
-
+            
             <div className="flex items-center justify-center">
               {modalContent?.type === "image" ? (
                 <img
@@ -150,4 +184,4 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
   );
 };
 
-export default GalleryHome;
+export default GalleryPage;

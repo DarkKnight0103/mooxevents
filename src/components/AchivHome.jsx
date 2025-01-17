@@ -71,7 +71,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./AchivHome.module.css";
 import axios from "axios";
-import { div } from "framer-motion/client";
 
 const AchivHome = () => {
   const ip = import.meta.env.VITE_IP;
@@ -84,8 +83,13 @@ const AchivHome = () => {
       try {
         const response = await axios.post(`${ip}/moox_events/api/achievements/get-all-achievements`);
         const data = response.data.events;
+
         if (data && Array.isArray(data)) {
-          setProfiles(data);
+          // Sorting by event_date in descending order and taking the first 6
+          const sortedData = data
+            .sort((a, b) => new Date(b.event_date) - new Date(a.event_date))
+            .slice(0, 6);
+          setProfiles(sortedData);
         } else {
           setError("Unexpected data format received");
         }
@@ -100,7 +104,11 @@ const AchivHome = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#DBAF76]"></div>
+      </div>
+    );
   }
 
   if (error) {
@@ -128,13 +136,15 @@ const AchivHome = () => {
 
   return (
     <div className="flex justify-center items-center">
-    <div className={styles.achievement_wrap}>
-      {profiles.map((profile) => (
-        <ProfileCard key={profile._id} profile={profile} />
-      ))}
-    </div>
+      {/* // <div className={styles.container}> */}
+      <div className={styles.achievement_wrap}>
+        {profiles.map((profile) => (
+          <ProfileCard key={profile._id} profile={profile} />
+        ))}
+      </div>
     </div>
   );
 };
 
 export default AchivHome;
+

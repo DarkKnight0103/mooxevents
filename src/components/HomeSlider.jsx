@@ -35,7 +35,7 @@
 //         alt={`Slide ${index + 1}`}
 //         className="object-cover w-full h-full"
 //       />
-      
+
 //       {/* Responsive hashtag */}
 //       <div className="absolute bottom-4 left-4 text-white font-bold px-4 py-2 rounded-md">
 //         <span className="text-5xl md:text-5xl lg:text-8xl">{slide.hashtag}</span>
@@ -100,14 +100,6 @@
 
 // export default HomeSlider;
 
-
-
-
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 import { TypeAnimation } from "react-type-animation";
 
@@ -118,6 +110,7 @@ const HomeSlider = () => {
     { image: "/img3.jpg" },
   ];
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false); // State to track scroll position
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
@@ -126,6 +119,19 @@ const HomeSlider = () => {
 
     return () => clearInterval(slideInterval);
   }, [slides.length]);
+
+  // Scroll effect to toggle logo and backdrop blur
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+
+      // Add backdrop-blur when user scrolls
+      setIsScrolled(scrollTop > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -154,15 +160,15 @@ const HomeSlider = () => {
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center h-full w-full px-8">
         {/* Logo Section */}
         <div className="lg:w-1/2 flex justify-center items-center mb-10 lg:mb-0">
-        <img
-  src="/logo.png"
-  alt="Logo"
-  className="w-1/3 md:w-1/4 lg:w-2/5"
-  style={{
-    filter: "drop-shadow(0px 3px 7px rgba(255, 255, 255, 0.3))",
-  }}
-/>
-
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className={`w-1/3 md:w-1/4 lg:w-2/5 transition-opacity duration-300 ${ 
+              isScrolled ? "opacity-0 " : "opacity-100"}`}
+            style={{
+              filter: "drop-shadow(0px 3px 7px rgba(255, 255, 255, 0.3))",
+            }}
+          />
         </div>
 
         {/* Text Content Section */}
@@ -180,22 +186,25 @@ const HomeSlider = () => {
 
           {/* Type Animation */}
           <TypeAnimation
-  sequence={[
-    "create unforgettable weddings?", 2200, // 1800ms typing + 2200ms pause
-    "host standout corporate events?", 2200,
-    "throw unforgettable parties?", 2200,
-    "craft lasting memories?", 2200,
-  ]}
-  wrapper="span"
-  speed={60} // 60ms per character
-  style={{
-    fontSize: "1.5rem",
-    display: "inline-block",
-    textShadow: "0 0 5px rgba(255, 255, 255, 0.7)",
-  }}
-  repeat={Infinity}
-/>
-
+            sequence={[
+              "create unforgettable weddings?",
+              2200, // 1800ms typing + 2200ms pause
+              "host standout corporate events?",
+              2200,
+              "throw unforgettable parties?",
+              2200,
+              "craft lasting memories?",
+              2200,
+            ]}
+            wrapper="span"
+            speed={60} // 60ms per character
+            style={{
+              fontSize: "1.5rem",
+              display: "inline-block",
+              textShadow: "0 0 5px rgba(255, 255, 255, 0.7)",
+            }}
+            repeat={Infinity}
+          />
         </div>
       </div>
     </div>

@@ -72,6 +72,8 @@ const AppRoutes = () => {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/signup" element={<Signup />} />
+        <Route path="/admin/verify" element={<VerifyOTP />} />
+        <Route path="/admin" element={<Dashboard />} />
 
         {/* Guarded Routes */}
         <Route

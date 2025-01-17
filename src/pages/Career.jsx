@@ -108,13 +108,13 @@ const Career = () => {
       <Menu />
       <div className="min-h-screen flex flex-col font-parkin bg-gray-100">
         {/* Header Section */}
-        <div className="bg-gray-900 h-96 text-white text-center py-16 flex items-center justify-center flex-col px-4" data-aos="fade-up">
+        <div className="bg-gray-900 h-96 text-white text-center py-16 flex items-center justify-center flex-col px-4" data-aos="fade-down" data-aos-duration="1500">
           <h1 className="text-4xl md:text-5xl font-bold text-white font-parkin">Career at Moox Events</h1>
-          <p className="text-lg md:text-xl mt-2">Join our team and be a part of something special</p>
+          <p className="text-lg md:text-xl mt-2 opacity-0 animate-fadeIn">Join our team and be a part of something special</p>
         </div>
 
         {/* Breadcrumb Section */}
-        <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-up">
+        <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-down" data-aos-duration="1500">
           <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
             <li>
               <a href="/" className="hover:text-[#785322]">Home</a>
@@ -127,7 +127,7 @@ const Career = () => {
         </nav>
 
         {/* Why Choose Moox Events Section */}
-        <section className="px-6 py-12 md:px-8 md:py-16 bg-white" data-aos="fade-up">
+        <section className="px-6 py-12 md:px-8 md:py-16 bg-white" data-aos="fade-up" data-aos-duration="1500">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-semibold text-[#283B5C] mb-6">Why Choose Moox Events?</h2>
             <p className="text-lg text-gray-700">
@@ -137,7 +137,7 @@ const Career = () => {
         </section>
 
         {/* Open Positions Section */}
-        <section className="px-6 py-12 md:px-8 md:py-16 bg-white" data-aos="fade-up">
+        <section className="px-6 py-12 md:px-8 md:py-16 bg-white" data-aos="fade-up" data-aos-duration="1500">
           <h2 className="text-3xl font-semibold text-center mb-8">
             Open Positions at <span className="text-[#DBAF76]">Moox Events</span>
           </h2>

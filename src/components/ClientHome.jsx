@@ -33,8 +33,8 @@ const ClientHome = ({ onDataLoaded }) => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="py-12 font-parkin text-center">
-        <p>Loading clients...</p>
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#DBAF76]"></div>
       </div>
     );
   }
@@ -51,11 +51,16 @@ const ClientHome = ({ onDataLoaded }) => {
   return (
     <div className="py-12 font-parkin">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {clients.map((client) => (
+        <div
+          className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
+          data-aos="fade-up" // AOS animation for the grid
+        >
+          {clients.map((client, index) => (
             <div
               key={client._id} // Ensure unique identifier for the key
               className="relative flex flex-col items-center justify-center p-4 rounded-lg bg-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                data-aos="zoom-in" // AOS animation for each card
+                data-aos-delay={`${index * 100}`} // Staggered delay for each client card
             >
               {/* Logo */}
               <img

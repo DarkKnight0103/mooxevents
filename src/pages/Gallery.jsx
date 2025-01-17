@@ -3,7 +3,7 @@ import Footer from '../components/Footer';
 import Menu from '../components/Menu';
 import AOS from 'aos';
 import Loader from '../components/Loader';
-import GalleryHome from '../components/GalleryHome'; // Import the GalleryHome component
+import GalleryPage from '../components/GalleryPage'
 
 const Gallery = () => {
   const [isLoading, setIsLoading] = useState(true); // To handle the loader visibility
@@ -35,14 +35,15 @@ const Gallery = () => {
         {/* Header Section */}
         <div
           className="bg-gray-900 h-96 text-white text-center py-16 flex items-center justify-center flex-col px-4"
-          data-aos="fade-up"
+          data-aos="fade-down"
+          data-aos-duration="2000"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-white font-parkin">Gallery</h1>
-          <p className="text-lg md:text-xl mt-2">Amazing moments captured to remember</p>
+          <p className="text-lg md:text-xl mt-2 opacity-0 animate-fadeIn">Amazing moments captured to remember</p>
         </div>
 
         {/* Breadcrumbs */}
-        <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-up">
+        <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-down" data-aos-duration="2000">
           <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
             <li>
               <a href="/" className="hover:text-[#785322]">
@@ -59,7 +60,7 @@ const Gallery = () => {
         </nav>
 
         {/* Pass handleDataLoaded as a prop to GalleryHome */}
-        <GalleryHome onGalleryLoadComplete={handleDataLoaded} />
+        <GalleryPage onGalleryLoadComplete={handleDataLoaded} />
 
         {/* Footer Component */}
         <Footer />

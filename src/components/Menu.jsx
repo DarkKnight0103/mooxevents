@@ -430,23 +430,44 @@ import { useSpring, animated, useTrail } from "@react-spring/web";
 import { Link } from "react-router-dom";
 
 const Menu = () => {
-  const [isOpen, setIsOpen] = useState(false); // Menu state
-  const [showLogo, setShowLogo] = useState(false); // State to show/hide logo
-  const [isScrolled, setIsScrolled] = useState(false); // State to track scroll position
+  const [isOpen, setIsOpen] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
-  // Animation for fullscreen menu
+  let lastScrollY = 0;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+
+      if (scrollTop > lastScrollY && !isOpen) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setShowLogo(scrollTop > 50);
+      setIsScrolled(scrollTop > 10);
+
+      lastScrollY = scrollTop > 0 ? scrollTop : 0;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isOpen]);
+
   const menuAnimation = useSpring({
     transform: isOpen ? "translateY(0%)" : "translateY(-100%)",
     opacity: isOpen ? 1 : 0,
     config: { tension: 130, friction: 30 },
   });
 
-  // Trail animation for menu items
   const items = [
     { name: "Home", link: "/" },
     { name: "About Us", link: "/about" },
     { name: "Services", link: "/services" },
-    { name: "Events", link: "/events" },
+    { name: "Blogs", link: "/events" },
     { name: "Gallery", link: "/gallery" },
     { name: "Career", link: "/career" },
     { name: "Contact", link: "/contact" },
@@ -459,65 +480,55 @@ const Menu = () => {
     reset: true,
   });
 
-  // Scroll effect to toggle logo and backdrop blur
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-
-      // Show logo if scrolled more than 50px
-      setShowLogo(scrollTop > 50);
-
-      // Add backdrop-blur when user scrolls
-      setIsScrolled(scrollTop > 10);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <>
-      {/* Hamburger Menu Button */}
+      {/* Navbar */}
       <div
-        className={`fixed z-50 px-5 py-1 md:px-10 md:py-1 flex justify-between items-center w-full transition duration-300 ${
-          isScrolled ? "" : "" // Add blur only when scrolled
-        }`}
+        className={`fixed z-50 w-full transition-all duration-300 ${
+          isOpen
+            ? "bg-transparent h-16"
+            : isScrolled
+            ? "bg-white/95 backdrop-blur-sm h-20"
+            : "bg-transparent h-20"
+        } ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
       >
-        <div className="w-full flex items-start z-10">
-          {/* Conditionally hide the logo when menu is open */}
-          <Link to="/">
-            <img
-              src="/logo.png"
-              alt=""
-              className={`w-28 md:w-36 mt-3 transition-opacity duration-300 ${
-                isOpen || !showLogo ? "opacity-0 cursor-default" : "opacity-100"
-              }`}
-              style={{
-                filter: "drop-shadow(0 0px 6px rgba(255, 255, 255, 0.1))",
-              }}
+        <div className="h-full px-5 md:px-10 flex justify-between items-center">
+          <div className="flex items-center">
+            <Link to="/">
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className={`w-28 transition-opacity duration-300 ${
+                  isOpen || !showLogo ? "opacity-0" : "opacity-100"
+                }`}
+                style={{
+                  filter: "drop-shadow(0 0px 6px rgba(255, 255, 255, 0.1))",
+                }}
+              />
+            </Link>
+          </div>
+          
+          <div className="z-50 flex items-center">
+            <HamburgerSquash
+              toggled={isOpen}
+              toggle={setIsOpen}
+              size={25}
+              direction="left"
+              duration={0.3}
+              distance="lg"
+              rounded
+              label="Show menu"
+              color="#DBAF76"
+              easing="ease-in"
             />
-          </Link>
+          </div>
         </div>
-
-        {/* Hamburger menu */}
-        <HamburgerSquash
-          toggled={isOpen}
-          toggle={setIsOpen}
-          size={25}
-          direction="left"
-          duration={0.3}
-          distance="lg"
-          rounded
-          label="Show menu"
-          color="#DBAF76"
-          easing="ease-in"
-        />
       </div>
 
       {/* Fullscreen Menu */}
       <animated.div
         style={menuAnimation}
-        className="fixed top-0 left-0 w-full h-screen z-40 bg-gray-900 backdrop-blur-md ease-out"
+        className="fixed top-0 left-0 w-full h-screen z-40 bg-gray-900/95 backdrop-blur-md"
       >
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end h-full py-28 px-6 sm:py-20 sm:px-10 lg:px-28">
           {/* Main Menu Items */}
@@ -549,7 +560,7 @@ const Menu = () => {
               style={trail[items.length - 2]}
               className="font-parkin font-bold text-lg sm:text-xl text-[#DBAF76] lg:text-2xl hover:text-white transition duration-300"
               onMouseEnter={(e) =>
-                (e.target.style.textShadow = "0px 0px 10px #DBAF7666")
+                (e.target.style.textShadow = "0px 0px 10px rgba(219, 175, 118, 0.4)")
               }
               onMouseLeave={(e) => (e.target.style.textShadow = "none")}
             >
@@ -560,7 +571,7 @@ const Menu = () => {
               style={trail[items.length - 1]}
               className="font-parkin font-bold text-lg sm:text-xl text-[#DBAF76] lg:text-2xl hover:text-white transition duration-300"
               onMouseEnter={(e) =>
-                (e.target.style.textShadow = "0px 0px 10px #DBAF7666")
+                (e.target.style.textShadow = "0px 0px 10px rgba(219, 175, 118, 0.4)")
               }
               onMouseLeave={(e) => (e.target.style.textShadow = "none")}
             >

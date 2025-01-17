@@ -1,334 +1,375 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import './style/team.css'
-// const TeamManagement = () => {
-//     const [members, setMembers] = useState([]);
-//     const [newMember, setNewMember] = useState({
-//         user_id: '',
-//         name: '',
-//         description: '',
-//         position: '',
-//         facebook_link: '',
-//         instagram_link: '',
-//         photo: null,
-//     });
-//     const [activeMembers, setActiveMembers] = useState([]);
-//     const [loading, setLoading] = useState(true);
-//
-//     // Fetch members (active and all)
-//     const fetchMembers = async () => {
-//         try {
-//             const response = await axios.post(`${ip}/moox_events/api/team/get-all-member', { user_id: localStorage.getItem('userid') });
-//             setMembers(response.data.events);
-//             setLoading(false);
-//         } catch (error) {
-//             console.error('Error fetching members:', error);
-//         }
-//     };
-//
-//     const fetchActiveMembers = async () => {
-//         try {
-//             const response = await axios.post(`${ip}/moox_events/api/team/get-active-members');
-//             setActiveMembers(response.data.events);
-//         } catch (error) {
-//             console.error('Error fetching active members:', error);
-//         }
-//     };
-//
-//     useEffect(() => {
-//         fetchMembers();
-//         fetchActiveMembers();
-//     }, []);
-//
-//     // Handle member form input
-//     const handleInputChange = (e) => {
-//         const { name, value } = e.target;
-//         setNewMember({ ...newMember, [name]: value });
-//     };
-//
-//     const handlePhotoChange = (e) => {
-//         const file = e.target.files[0];
-//         if (file) {
-//             const reader = new FileReader();
-//             reader.onloadend = () => {
-//                 setNewMember({ ...newMember, photo: reader.result.split(',')[1] });
-//             };
-//             reader.readAsDataURL(file);
-//         }
-//     };
-//
-//     // Add member
-//     const handleAddMember = async (e) => {
-//         e.preventDefault();
-//         try {
-//             await axios.post(`${ip}/moox_events/api/team/add-member', {...newMember,user_id:localStorage.getItem('userid')});
-//             fetchMembers(); // Refresh the member list after adding
-//             alert('Member added successfully');
-//         } catch (error) {
-//             console.error('Error adding member:', error);
-//         }
-//     };
-//
-//     // Toggle member status
-//     const handleToggleStatus = async (event_id, status) => {
-//         try {
-//             await axios.post(`${ip}/moox_events/api/team/change-member-status', {
-//                 event_id,
-//                 status,
-//                 user_id: localStorage.getItem('userid'),
-//             });
-//             fetchMembers(); // Refresh the member list after status change
-//             alert(`Member status updated to ${status ? 'active' : 'inactive'}`);
-//         } catch (error) {
-//             console.error('Error updating member status:', error);
-//         }
-//     };
-//
-//     return (
-//         <div className="container">
-//             <h1>Team Management</h1>
-//
-//             <h2>All Members</h2>
-//             <div className="members-list">
-//                 {members.map((member) => (
-//                     <div key={member.id} className="member-card">
-//                         <img src={member.photo} alt={member.name} />
-//                         <h3>{member.name}</h3>
-//                         <p>{member.position}</p>
-//                         <p>{member.description}</p>
-//                         <button onClick={() => handleToggleStatus(member.id, !member.active)}>
-//                             {member.active ? 'Deactivate' : 'Activate'}
-//                         </button>
-//                     </div>
-//                 ))}
-//             </div>
-//
-//             <h2>Add New Member</h2>
-//             <form onSubmit={handleAddMember}>
-//                 <input
-//                     type="text"
-//                     name="name"
-//                     value={newMember.name}
-//                     placeholder="Name"
-//                     onChange={handleInputChange}
-//                     required
-//                 />
-//                 <input
-//                     type="text"
-//                     name="position"
-//                     value={newMember.position}
-//                     placeholder="Position"
-//                     onChange={handleInputChange}
-//                     required
-//                 />
-//                 <textarea
-//                     name="description"
-//                     value={newMember.description}
-//                     placeholder="Description"
-//                     onChange={handleInputChange}
-//                     required
-//                 />
-//                 <input
-//                     type="text"
-//                     name="facebook_link"
-//                     value={newMember.facebook_link}
-//                     placeholder="Facebook Link"
-//                     onChange={handleInputChange}
-//                 />
-//                 <input
-//                     type="text"
-//                     name="instagram_link"
-//                     value={newMember.instagram_link}
-//                     placeholder="Instagram Link"
-//                     onChange={handleInputChange}
-//                 />
-//                 <input type="file" onChange={handlePhotoChange} required />
-//                 <button type="submit">Add Member</button>
-//             </form>
-//         </div>
-//     );
-// };
-//
-// export default TeamManagement;
-
-
-
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Upload,
+  CheckCircle,
+  XCircle,
+  Plus,
+  ImagePlus,
+  Loader,
+  X,
+} from "lucide-react";
 
 const TeamManagement = () => {
-    const ip = import.meta.env.VITE_IP;
-    const [members, setMembers] = useState([]);
-    const [newMember, setNewMember] = useState({
-        user_id: '',
-        name: '',
-        description: '',
-        position: '',
-        facebook_link: '',
-        instagram_link: '',
+  const ip = import.meta.env.VITE_IP;
+  const [members, setMembers] = useState([]);
+  const [newMember, setNewMember] = useState({
+    user_id: "",
+    name: "",
+    description: "",
+    position: "",
+    facebook_link: "",
+    instagram_link: "",
+    photo: null,
+  });
+  const [activeMembers, setActiveMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState("");
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const fetchMembers = async () => {
+    try {
+      const response = await axios.post(
+        `${ip}/moox_events/api/team/get-all-member`,
+        { user_id: localStorage.getItem("userid") }
+      );
+      setMembers(response.data.events);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      setNotification("Failed to load team members");
+      setTimeout(() => setNotification(""), 2000);
+      setLoading(false);
+    }
+  };
+
+  const fetchActiveMembers = async () => {
+    try {
+      const response = await axios.post(
+        `${ip}/moox_events/api/team/get-active-members`
+      );
+      setActiveMembers(response.data.events);
+    } catch (error) {
+      console.error("Error fetching active members:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMembers();
+    fetchActiveMembers();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewMember({ ...newMember, [name]: value });
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+        setNewMember({ ...newMember, photo: reader.result.split(",")[1] });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddMember = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${ip}/moox_events/api/team/add-member`, {
+        ...newMember,
+        user_id: localStorage.getItem("userid"),
+      });
+      fetchMembers();
+      setNotification("Member added successfully");
+      setTimeout(() => setNotification(""), 2000);
+      setIsFormVisible(false);
+      setNewMember({
+        user_id: "",
+        name: "",
+        description: "",
+        position: "",
+        facebook_link: "",
+        instagram_link: "",
         photo: null,
-    });
-    const [activeMembers, setActiveMembers] = useState([]);
-    const [loading, setLoading] = useState(true);
+      });
+      setPreviewImage(null);
+    } catch (error) {
+      console.error("Error adding member:", error);
+      setNotification("Failed to add member");
+      setTimeout(() => setNotification(""), 2000);
+    }
+  };
 
-    // Fetch members (active and all)
-    const fetchMembers = async () => {
-        try {
-            const response = await axios.post(`${ip}/moox_events/api/team/get-all-member`, { user_id: localStorage.getItem('userid') });
-            setMembers(response.data.events);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching members:', error);
-        }
-    };
+  const handleToggleStatus = async (event_id, status) => {
+    try {
+      await axios.post(`${ip}/moox_events/api/team/change-member-status`, {
+        event_id,
+        status,
+        user_id: localStorage.getItem("userid"),
+      });
+      fetchMembers();
+      setNotification(
+        `Member ${status ? "activated" : "deactivated"} successfully`
+      );
+      setTimeout(() => setNotification(""), 2000);
+    } catch (error) {
+      console.error("Error updating member status:", error);
+      setNotification("Failed to update member status");
+      setTimeout(() => setNotification(""), 2000);
+    }
+  };
 
-    const fetchActiveMembers = async () => {
-        try {
-            const response = await axios.post(`${ip}/moox_events/api/team/get-active-members`);
-            setActiveMembers(response.data.events);
-        } catch (error) {
-            console.error('Error fetching active members:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchMembers();
-        fetchActiveMembers();
-    }, []);
-
-    // Handle member form input
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewMember({ ...newMember, [name]: value });
-    };
-
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setNewMember({ ...newMember, photo: reader.result.split(',')[1] });
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    // Add member
-    const handleAddMember = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post(`${ip}/moox_events/api/team/add-member`, {...newMember,user_id:localStorage.getItem('userid')});
-            fetchMembers(); // Refresh the member list after adding
-            alert('Member added successfully');
-        } catch (error) {
-            console.error('Error adding member:', error);
-        }
-    };
-
-    // Toggle member status
-    const handleToggleStatus = async (event_id, status) => {
-        try {
-            await axios.post(`${ip}/moox_events/api/team/change-member-status`, {
-                event_id,
-                status,
-                user_id: localStorage.getItem('userid'),
-            });
-            fetchMembers(); // Refresh the member list after status change
-            alert(`Member status updated to ${status ? 'active' : 'inactive'}`);
-        } catch (error) {
-            console.error('Error updating member status:', error);
-        }
-    };
-
-    return (
-        <div className="container mx-auto p-6 bg-gray-50">
-            <h1 className="text-3xl font-semibold text-gray-900 mb-6">Team Management</h1>
-
-            {/* All Members */}
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">All Members</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {members.map((member) => (
-                    <div key={member.id} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-2xl transition">
-                        <img src={member.photo} alt={member.name} className="w-full h-48 object-cover rounded-t-lg mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-900">{member.name}</h3>
-                        <p className="text-gray-600">{member.position}</p>
-                        <p className="text-gray-700 mt-2">{member.description}</p>
-                        <div className="flex gap-2 mt-4">
-                            <a href={member.facebook_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Facebook</a>
-                            <a href={member.instagram_link} target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:underline">Instagram</a>
-                        </div>
-                        <button
-                            onClick={() => handleToggleStatus(member.id, !member.active)}
-                            className={`mt-4 w-full py-2 rounded-md text-white ${member.active ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
-                        >
-                            {member.active ? 'Deactivate' : 'Activate'}
-                        </button>
-                    </div>
-                ))}
-            </div>
-
-            {/* Add New Member */}
-            <h2 className="text-2xl font-semibold text-gray-800 mt-12 mb-6">Add New Member</h2>
-            <form onSubmit={handleAddMember} className="space-y-4">
-                <input
-                    type="text"
-                    name="name"
-                    value={newMember.name}
-                    onChange={handleInputChange}
-                    placeholder="Name"
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                    type="text"
-                    name="position"
-                    value={newMember.position}
-                    onChange={handleInputChange}
-                    placeholder="Position"
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <textarea
-                    name="description"
-                    value={newMember.description}
-                    onChange={handleInputChange}
-                    placeholder="Description"
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                    type="text"
-                    name="facebook_link"
-                    value={newMember.facebook_link}
-                    onChange={handleInputChange}
-                    placeholder="Facebook Link"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                    type="text"
-                    name="instagram_link"
-                    value={newMember.instagram_link}
-                    onChange={handleInputChange}
-                    placeholder="Instagram Link"
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                    type="file"
-                    onChange={handlePhotoChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                    type="submit"
-                    className="w-full py-3 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-300"
-                >
-                    Add Member
-                </button>
-            </form>
+  return (
+    <div className="min-h-screen bg-[#FDF8DA] p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-[#1a2a47] rounded-2xl p-6 mb-8 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[#d6af53]/10"></div>
+          <div className="relative">
+            <h2 className="text-3xl font-bold text-white mb-2">
+              Team Management
+            </h2>
+            <p className="text-[#d6af53] font-medium">
+              Manage your team members and their profiles
+            </p>
+          </div>
         </div>
-    );
+
+        {/* Toggle Form Button */}
+        <button
+          onClick={() => setIsFormVisible(true)}
+          className="mb-8 bg-[#1a2a47] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#d6af53] focus:outline-none focus:ring-2 focus:ring-[#d6af53] focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+        >
+          <Plus className="w-5 h-5" />
+          Add New Member
+        </button>
+
+        {/* Modal Overlay */}
+        {isFormVisible && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            {/* Modal Content */}
+            <div className="bg-white rounded-2xl shadow-xl border border-[#d6af53]/20 overflow-hidden w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+              <div className="p-6 sm:p-8">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-semibold text-[#1a2a47]">
+                    Add New Member
+                  </h3>
+                </div>
+                <form onSubmit={handleAddMember} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input
+                      type="text"
+                      name="name"
+                      value={newMember.name}
+                      onChange={handleInputChange}
+                      placeholder="Name"
+                      required
+                      className="w-full px-4 py-3 border border-[#d6af53]/30 rounded-lg focus:ring-2 focus:ring-[#d6af53] focus:border-transparent transition-all duration-200 bg-white/50 hover:bg-white"
+                    />
+                    <input
+                      type="text"
+                      name="position"
+                      value={newMember.position}
+                      onChange={handleInputChange}
+                      placeholder="Position"
+                      required
+                      className="w-full px-4 py-3 border border-[#d6af53]/30 rounded-lg focus:ring-2 focus:ring-[#d6af53] focus:border-transparent transition-all duration-200 bg-white/50 hover:bg-white"
+                    />
+                    <div className="md:col-span-2">
+                      <textarea
+                        name="description"
+                        value={newMember.description}
+                        onChange={handleInputChange}
+                        placeholder="Description"
+                        required
+                        rows="4"
+                        className="w-full px-4 py-3 border border-[#d6af53]/30 rounded-lg focus:ring-2 focus:ring-[#d6af53] focus:border-transparent transition-all duration-200 bg-white/50 hover:bg-white"
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      name="facebook_link"
+                      value={newMember.facebook_link}
+                      onChange={handleInputChange}
+                      placeholder="Facebook Username"
+                      className="w-full px-4 py-3 border border-[#d6af53]/30 rounded-lg focus:ring-2 focus:ring-[#d6af53] focus:border-transparent transition-all duration-200 bg-white/50 hover:bg-white"
+                    />
+                    <input
+                      type="text"
+                      name="instagram_link"
+                      value={newMember.instagram_link}
+                      onChange={handleInputChange}
+                      placeholder="Instagram Username"
+                      className="w-full px-4 py-3 border border-[#d6af53]/30 rounded-lg focus:ring-2 focus:ring-[#d6af53] focus:border-transparent transition-all duration-200 bg-white/50 hover:bg-white"
+                    />
+                    <div className="md:col-span-2">
+                      <div className="relative">
+                        <input
+                          type="file"
+                          onChange={handlePhotoChange}
+                          required
+                          className="hidden"
+                          id="member-photo"
+                        />
+                        <label
+                          htmlFor="member-photo"
+                          className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-[#d6af53]/30 rounded-lg cursor-pointer hover:border-[#d6af53] transition-all duration-200"
+                        >
+                          {previewImage ? (
+                            <div className="relative w-full aspect-video">
+                              <img
+                                src={previewImage}
+                                alt="Preview"
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                                <ImagePlus className="w-8 h-8 text-white" />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center py-4">
+                              <Upload className="w-8 h-8 text-[#d6af53] mb-2" />
+                              <span className="text-sm text-gray-600">
+                                Click to upload photo
+                              </span>
+                            </div>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button
+                      type="submit"
+                      className="flex-1 bg-[#1a2a47] text-white py-3.5 px-4 rounded-lg font-semibold hover:bg-[#d6af53] focus:outline-none focus:ring-2 focus:ring-[#d6af53] focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                    >
+                      <Plus className="w-5 h-5" />
+                      Add Member
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsFormVisible(false)}
+                      className="flex-1 bg-gray-200 text-gray-800 py-3.5 px-4 rounded-lg font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02]"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Members Grid */}
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <Loader className="w-8 h-8 text-[#1a2a47] animate-spin" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {members.map((member) => (
+              <div
+                key={member.id}
+                className="group relative h-[400px] bg-white rounded-2xl shadow-xl border border-[#d6af53]/10 overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:border-[#d6af53]/30"
+              >
+                <img
+                  src={member.photo}
+                  alt={member.name}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+                {/* Status Badge */}
+                <div
+                  className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm ${
+                    member.active
+                      ? "bg-green-500/90 text-white"
+                      : "bg-red-500/90 text-white"
+                  }`}
+                >
+                  {member.active ? "Active" : "Inactive"}
+                </div>
+
+                {/* Member Info */}
+                <div className="absolute bottom-20 left-6">
+                  <h3 className="text-2xl font-bold text-white drop-shadow-lg mb-2">
+                    {member.name}
+                  </h3>
+                  <p className="text-[#d6af53] font-medium mb-2">
+                    {member.position}
+                  </p>
+                  <p className="text-white/80 line-clamp-2 text-sm">
+                    {member.description}
+                  </p>
+                  <div className="flex gap-4 mt-4">
+                    {member.facebook_link && (
+                      <a
+                        href={`https://www.facebook.com/${member.facebook_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white hover:text-[#d6af53] transition-colors"
+                      >
+                        Facebook
+                      </a>
+                    )}
+                    {member.instagram_link && (
+                      <a
+                        href={`https://www.instagram.com/${member.instagram_link}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white hover:text-[#d6af53] transition-colors"
+                      >
+                        Instagram
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="absolute bottom-6 right-6">
+                  <button
+                    onClick={() =>
+                      handleToggleStatus(member.id, !member.active)
+                    }
+                    className={`flex items-center gap-2 px-4 h-10 rounded-full transition-all duration-300 ${
+                      member.active
+                        ? "bg-[#1a2a47]/80 text-white hover:bg-[#d6af53]"
+                        : "bg-[#d6af53]/80 text-white hover:bg-[#1a2a47]"
+                    }`}
+                  >
+                    {member.active ? (
+                      <>
+                        <XCircle className="w-5 h-5" />
+                        <span>Deactivate</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        <span>Activate</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Floating Notification */}
+      {notification && (
+        <div className="fixed bottom-4 right-4 bg-[#1a2a47] text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 animate-fade-in">
+          {notification}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default TeamManagement;
-

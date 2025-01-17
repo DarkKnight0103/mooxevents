@@ -108,7 +108,7 @@
   
   .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 2fr)); /* Responsive grid */
     gap: 20px;
   }
   
@@ -174,20 +174,28 @@
     background: #1a2a47; /* Navy Blue */
     color: white;
     transform: rotateY(180deg); /* Rotate back side */
-    padding: 30px;
+    padding: 20px;
   }
   
   .card-back-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     margin-bottom: 12px;
-    color: #d6af53; /* Gold */
+    color: #d6af53;
+
+  }
+
+  @media screen and (max-width: 768px) {
+    .services-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+    }
+    
   }
   
   .card-back-status {
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 12px;
-    text-align: center;
+    text-wrap: wrap;
   }
   
   .card-button {

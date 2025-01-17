@@ -1,363 +1,314 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-//
-// const ClientManagement = () => {
-//     const [clients, setClients] = useState([]);
-//     const [formData, setFormData] = useState({ name: '', active: true, photo: '' });
-//     const [showPopup, setShowPopup] = useState(false);
-//     const [message, setMessage] = useState('');
-//
-//     // Fetch clients on component load
-//     useEffect(() => {
-//         const fetchClients = async () => {
-//             try {
-//                 const response = await axios.post(`${ip}/moox_events/api/client/get-client',{user_id:localStorage.getItem('userid')});
-//                 setClients(response.data.clients);
-//             } catch (error) {
-//                 setMessage('Failed to fetch clients. ' + error.response?.data?.message || error.message);
-//             }
-//         };
-//         fetchClients();
-//     }, []);
-//
-//     // Handle form field changes
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         setFormData({ ...formData, [name]: value });
-//     };
-//
-//     // Handle photo upload and convert to Base64
-//     const handlePhotoChange = (e) => {
-//         const file = e.target.files[0];
-//         if (file) {
-//             const reader = new FileReader();
-//             reader.readAsDataURL(file);
-//             reader.onloadend = () => {
-//                 setFormData({ ...formData, photo: reader.result.split(',')[1] }); // Store Base64 string
-//             };
-//         }
-//     };
-//
-//     // Submit new client
-//     const handleAddClient = async (e) => {
-//         e.preventDefault();
-//
-//         if (!formData.photo) {
-//             setMessage('Please upload a photo.');
-//             return;
-//         }
-//
-//         try {
-//             const response = await axios.post(`${ip}/moox_events/api/client/add-client', {
-//                 name: formData.name,
-//                 active: true,
-//                 user_id:localStorage.getItem('userid'),
-//                 photo: formData.photo, // Send Base64 string
-//             });
-//             setMessage(response.data.message);
-//             setClients([...clients, response.data.client]);
-//             setShowPopup(false);
-//             setFormData({ name: '', active: true, photo: '' });
-//         } catch (error) {
-//             setMessage('Failed to add client. ' + error.response?.data?.message || error.message);
-//         }
-//     };
-//
-//     // Toggle client active status
-//     const toggleStatus = async (clientId, currentStatus) => {
-//         try {
-//             const response = await axios.post(`${ip}/moox_events/api/client/change-client-status', {
-//                 event_id:clientId,
-//                 user_id: localStorage.getItem('userid'),
-//                 status: !currentStatus,
-//             });
-//             setMessage(response.data.message);
-//             setClients(clients.map(client => (client._id === clientId ? { ...client, active: !currentStatus } : client)));
-//         } catch (error) {
-//             setMessage('Failed to update client status. ' + error.response?.data?.message || error.message);
-//         }
-//     };
-//
-//     return (
-//         <div style={{ padding: '2rem' }}>
-//             <h1>Client Management</h1>
-//             <button onClick={() => setShowPopup(true)} style={{ marginBottom: '1rem' }}>
-//                 Add Client
-//             </button>
-//             {message && <p>{message}</p>}
-//
-//             {/* Popup for adding a client */}
-//             {showPopup && (
-//                 <div
-//                     style={{
-//                         position: 'fixed',
-//                         top: '50%',
-//                         left: '50%',
-//                         transform: 'translate(-50%, -50%)',
-//                         backgroundColor: '#fff',
-//                         padding: '2rem',
-//                         boxShadow: '0 0 10px rgba(0,0,0,0.5)',
-//                         zIndex: 1000,
-//                     }}
-//                 >
-//                     <h2>Add Client</h2>
-//                     <form onSubmit={handleAddClient}>
-//                         <div>
-//                             <label>Name:</label>
-//                             <input
-//                                 type="text"
-//                                 name="name"
-//                                 value={formData.name}
-//                                 onChange={handleChange}
-//                                 required
-//                             />
-//                         </div>
-//
-//                         <div>
-//                             <label>Photo:</label>
-//                             <input type="file" accept="image/*" onChange={handlePhotoChange} required />
-//                         </div>
-//                         <button type="submit">Add Client</button>
-//                         <button
-//                             type="button"
-//                             onClick={() => setShowPopup(false)}
-//                             style={{ marginLeft: '1rem' }}
-//                         >
-//                             Cancel
-//                         </button>
-//                     </form>
-//                 </div>
-//             )}
-//
-//             {/* Client list */}
-//             <div>
-//                 {clients.map(client => (
-//                     <div
-//                         key={client._id}
-//                         style={{
-//                             border: '1px solid #ccc',
-//                             padding: '1rem',
-//                             marginBottom: '1rem',
-//                             display: 'flex',
-//                             alignItems: 'center',
-//                         }}
-//                     >
-//                         <img
-//                             src={client.logo}
-//                             alt={client.name}
-//                             style={{ width: '50px', height: '50px', marginRight: '1rem' }}
-//                         />
-//                         <div style={{ flexGrow: 1 }}>
-//                             <h3>{client.name}</h3>
-//                             <p>Status: {client.active ? 'Active' : 'Inactive'}</p>
-//                         </div>
-//                         <button onClick={() => toggleStatus(client._id, client.active)}>
-//                             {client.active ? 'Deactivate' : 'Activate'}
-//                         </button>
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// };
-//
-// export default ClientManagement;
-
-
-
-
-
-
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Plus, Upload, ImagePlus, Loader } from "lucide-react";
+import { set } from "rsuite/esm/internals/utils/date";
 
 const ClientManagement = () => {
-    const ip = import.meta.env.VITE_IP;
-    const [clients, setClients] = useState([]);
-    const [formData, setFormData] = useState({ name: '', active: true, photo: '' });
-    const [showPopup, setShowPopup] = useState(false);
-    const [message, setMessage] = useState('');
-    const [messageVisible, setMessageVisible] = useState(false);
+  const ip = import.meta.env.VITE_IP;
+  const [clients, setClients] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    active: true,
+    logo: "",
+  });
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [messageVisible, setMessageVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
-    // Fetch clients on component load
-    useEffect(() => {
-        const fetchClients = async () => {
-            try {
-                const response = await axios.post(`${ip}/moox_events/api/client/get-client`, { user_id: localStorage.getItem('userid') });
-                setClients(response.data.clients);
-            } catch (error) {
-                setMessage('Failed to fetch clients. ' + error.response?.data?.message || error.message);
-            }
-        };
-        fetchClients();
-    }, []);
-
-    // Handle form field changes
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+  // Fetch clients on component load
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.post(
+          `${ip}/moox_events/api/client/get-client`,
+          { user_id: localStorage.getItem("userid") }
+        );
+        setClients(response.data.clients);
+        setLoading(false);
+      } catch (error) {
+        setMessage(
+          "Failed to fetch clients. " + error.response?.data?.message ||
+            error.message
+        );
+        setLoading(false);
+      }
     };
+    fetchClients();
+  }, []);
 
-    // Handle photo upload and convert to Base64
-    const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onloadend = () => {
-                setFormData({ ...formData, photo: reader.result.split(',')[1] }); // Store Base64 string
-            };
+  console.log(clients);
+
+  // Handle form field changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle photo upload and convert to Base64
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+        setFormData({ ...formData, logo: reader.result.split(",")[1] }); // Store Base64 string
+      };
+    }
+  };
+
+  // Submit new client
+  const handleAddClient = async (e) => {
+    e.preventDefault();
+
+    if (!formData.logo) {
+      setMessage("Please upload a photo.");
+      setMessageVisible(true);
+      setTimeout(() => setMessageVisible(false), 2000);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${ip}/moox_events/api/client/add-client`,
+        {
+          name: formData.name,
+          active: true,
+          user_id: localStorage.getItem("userid"),
+          logo: formData.logo,
         }
-    };
+      );
 
-    // Submit new client
-    const handleAddClient = async (e) => {
-        e.preventDefault();
+      setMessage(response.data.message);
+      setClients((prevClients) => [...prevClients, response.data.client]);
+      setFormData({ name: "", active: true, logo: "" });
+      setPreviewImage(null);
+      setShowPopup(false);
 
-        if (!formData.photo) {
-            setMessage('Please upload a photo.');
-            return;
+      setMessageVisible(true);
+      setTimeout(() => setMessageVisible(false), 2000);
+    } catch (error) {
+      setMessage(
+        "Failed to add client. " +
+          (error.response?.data?.message || error.message)
+      );
+      setMessageVisible(true);
+      setTimeout(() => setMessageVisible(false), 2000);
+    }
+  };
+
+  // Toggle client active status
+  const toggleStatus = async (clientId, currentStatus) => {
+    try {
+      const response = await axios.post(
+        `${ip}/moox_events/api/client/change-client-status`,
+        {
+          event_id: clientId,
+          user_id: localStorage.getItem("userid"),
+          status: !currentStatus,
         }
+      );
+      setMessage(response.data.message);
+      setClients((prevClients) =>
+        prevClients.map((client) =>
+          client._id === clientId
+            ? { ...client, active: !currentStatus }
+            : client
+        )
+      );
+      setMessageVisible(true);
+      setTimeout(() => setMessageVisible(false), 2000);
+    } catch (error) {
+      setMessage(
+        "Failed to update client status. " +
+          (error.response?.data?.message || error.message)
+      );
+      setMessageVisible(true);
+      setTimeout(() => setMessageVisible(false), 2000);
+    }
+  };
 
-        try {
-            const response = await axios.post(`${ip}/moox_events/api/client/add-client`, {
-                name: formData.name,
-                active: true,
-                user_id: localStorage.getItem('userid'),
-                photo: formData.photo, // Send Base64 string
-            });
-            setMessage(response.data.message);
-            setClients([...clients, response.data.client]);
-            setShowPopup(false);
-            setFormData({ name: '', active: true, photo: '' });
-        } catch (error) {
-            setMessage('Failed to add client. ' + error.response?.data?.message || error.message);
-        }
-    };
-
-    // Toggle client active status
-    const toggleStatus = async (clientId, currentStatus) => {
-        try {
-            const response = await axios.post(`${ip}/moox_events/api/client/change-client-status`, {
-                event_id: clientId,
-                user_id: localStorage.getItem('userid'),
-                status: !currentStatus,
-            });
-            setMessage(response.data.message);
-            setClients(clients.map(client => (client._id === clientId ? { ...client, active: !currentStatus } : client)));
-
-            // Display the floating message
-            setMessageVisible(true);
-            setTimeout(() => {
-                setMessageVisible(false);
-            }, 2000); // Hide after 2 seconds
-        } catch (error) {
-            setMessage('Failed to update client status. ' + error.response?.data?.message || error.message);
-        }
-    };
-
-    return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <h1 className="text-3xl font-semibold text-gray-900 mb-4">Client Management</h1>
-            <button
-                onClick={() => setShowPopup(true)}
-                className="mb-6 px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 focus:ring focus:ring-indigo-300"
-            >
-                Add Client
-            </button>
-
-            {/* Popup for adding a client */}
-            {showPopup && (
-                <>
-                    {/* Overlay */}
-                    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-25 z-40"></div>
-
-                    {/* Popup */}
-                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-md shadow-lg z-50 w-full max-w-md">
-                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Add Client</h2>
-                        <form onSubmit={handleAddClient} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-300"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Photo</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handlePhotoChange}
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-300"
-                                />
-                            </div>
-                            <div className="flex space-x-4">
-                                <button
-                                    type="submit"
-                                    className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700 focus:ring focus:ring-indigo-300"
-                                >
-                                    Save
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPopup(false)}
-                                    className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md shadow hover:bg-gray-400"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </>
-            )}
-
-            {/* Floating message */}
-            {messageVisible && (
-                <div className="fixed bottom-4 right-4 bg-indigo-600 text-white p-3 rounded-md shadow-lg">
-                    {message}
-                </div>
-            )}
-
-            {/* Client list */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                {clients.map(client => (
-                    <div
-                        key={client._id}
-                        className="p-4 bg-white rounded-md shadow-md hover:shadow-lg transition"
-                    >
-                        <div className="flex items-center space-x-4">
-                            <img
-                                src={`data:image/png;base64,${client.photo}`}
-                                alt={client.name}
-                                className="w-12 h-12 rounded-full object-cover"
-                            />
-                            <div>
-                                <h3 className="text-lg font-medium text-gray-900">{client.name}</h3>
-                                <p className="text-sm text-gray-600">{client.active ? 'Active' : 'Inactive'}</p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => toggleStatus(client._id, client.active)}
-                            className={`mt-4 px-4 py-2 w-full rounded-md text-white shadow focus:ring ${
-                                client.active
-                                    ? 'bg-red-500 hover:bg-red-600 focus:ring-red-300'
-                                    : 'bg-green-500 hover:bg-green-600 focus:ring-green-300'
-                            }`}
-                        >
-                            {client.active ? 'Deactivate' : 'Activate'}
-                        </button>
-                    </div>
-                ))}
-            </div>
+  return (
+    <div className="min-h-screen bg-[#FDF8DA] p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-[#1a2a47] rounded-2xl p-6 mb-8 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[#d6af53]/10"></div>
+          <div className="relative">
+            <h2 className="text-3xl font-bold text-white mb-2">
+              Client Management
+            </h2>
+            <p className="text-[#d6af53] font-medium">
+              Add and manage your clients
+            </p>
+          </div>
         </div>
-    );
+
+        {/* Add Client Button */}
+        <button
+          onClick={() => setShowPopup(true)}
+          className="mb-8 bg-[#1a2a47] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#d6af53] focus:outline-none focus:ring-2 focus:ring-[#d6af53] focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+        >
+          <Plus className="w-5 h-5" />
+          Add New Client
+        </button>
+
+        {/* Form Popup */}
+        {showPopup && (
+          <>
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
+            <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-xl z-50">
+              <div className="bg-white rounded-2xl shadow-xl border border-[#d6af53]/20 overflow-hidden">
+                <div className="p-6 sm:p-8">
+                  <h3 className="text-xl font-semibold text-[#1a2a47] mb-6">
+                    Add New Client
+                  </h3>
+                  <form onSubmit={handleAddClient} className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-[#1a2a47] mb-2">
+                        Client Name
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-3 border border-[#d6af53]/30 rounded-lg focus:ring-2 focus:ring-[#d6af53] focus:border-transparent transition-all duration-200 bg-white/50 hover:bg-white"
+                        placeholder="Enter client name"
+                      />
+                    </div>
+
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-[#1a2a47] mb-2">
+                        Client Photo
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoChange}
+                          required
+                          className="hidden"
+                          id="client-photo"
+                        />
+                        <label
+                          htmlFor="client-photo"
+                          className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-[#d6af53]/30 rounded-lg cursor-pointer hover:border-[#d6af53] transition-all duration-200"
+                        >
+                          {previewImage ? (
+                            <div className="relative w-full aspect-video">
+                              <img
+                                src={previewImage}
+                                alt="Preview"
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-lg">
+                                <ImagePlus className="w-8 h-8 text-white" />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center justify-center py-4">
+                              <Upload className="w-8 h-8 text-[#d6af53] mb-2" />
+                              <span className="text-sm text-gray-600">
+                                Click to upload photo
+                              </span>
+                            </div>
+                          )}
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button
+                        type="submit"
+                        className="flex-1 bg-[#1a2a47] text-white py-3.5 px-4 rounded-lg font-semibold hover:bg-[#d6af53] focus:outline-none focus:ring-2 focus:ring-[#d6af53] focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                      >
+                        <Plus className="w-5 h-5" />
+                        Add Client
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowPopup(false)}
+                        className="flex-1 bg-gray-200 text-gray-800 py-3.5 px-4 rounded-lg font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02]"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Clients Grid */}
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+          <Loader className="w-8 h-8 text-[#1a2a47] animate-spin" />
+      </div>
+        ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {clients.map((client) => (
+            <div
+              key={client._id}
+              className="group relative h-[400px] bg-moox-navy rounded-2xl shadow-xl border border-[#d6af53]/10 overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:border-[#d6af53]/30"
+            >
+              {/* Full-size image with gradient overlay */}
+              <img
+                src={client.logo}
+                alt={client.name}
+                className="absolute justify-self-center ot inset-0 pt-10 w-64 h-fit object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+
+              {/* Status Badge */}
+              <div
+                className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm ${
+                  client.active
+                    ? "bg-green-500/90 text-white"
+                    : "bg-red-500/90 text-white"
+                }`}
+              >
+                {client.active ? "Active" : "Inactive"}
+              </div>
+
+              {/* Client Name */}
+              <div className="absolute bottom-20 left-6">
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg">
+                  {client.name}
+                </h3>
+              </div>
+
+              {/* Action Button */}
+              <div className="absolute bottom-6 left-6 right-6">
+                <button
+                  onClick={() => toggleStatus(client._id, client.active)}
+                  className={`w-full px-4 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl ${
+                    client.active
+                      ? "bg-red-500/90 text-white hover:bg-red-600"
+                      : "bg-green-500/90 text-white hover:bg-green-600"
+                  }`}
+                >
+                  {client.active ? "Deactivate Client" : "Activate Client"}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        )}
+      </div>
+
+      {/* Floating Notification */}
+      {messageVisible && (
+        <div className="fixed bottom-4 right-4 bg-[#1a2a47] text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 animate-fade-in z-[9999]">
+          {message}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ClientManagement;
