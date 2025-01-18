@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import axios from "axios";
-import { X, User, Calendar, Clock } from "lucide-react";
+import { X, User, Calendar, Clock, ChevronDown } from "lucide-react";
 
 const BlogCard = ({ blog, onViewPost }) => {
   return (
@@ -231,11 +231,14 @@ const BlogPopup = ({ blog, onClose }) => {
   );
 };
 
-const BlogList = ({ selectedCategory, onDataLoaded }) => {
+const Blogs = ({ onDataLoaded }) => {
   const [blogs, setBlogs] = useState([]);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [categories, setCategories] = useState(["All"]);
   const ip = import.meta.env.VITE_IP;
 
   useEffect(() => {
@@ -256,6 +259,14 @@ const BlogList = ({ selectedCategory, onDataLoaded }) => {
         // Filter only active blogs
         const activeBlogs = response.data.blogs.filter((blog) => blog.active);
         setBlogs(activeBlogs);
+
+        // Extract unique categories
+        const uniqueCategories = [
+          "All",
+          ...new Set(activeBlogs.map((blog) => blog.category).filter(Boolean)),
+        ];
+        setCategories(uniqueCategories);
+
         setIsLoading(false);
 
         if (onDataLoaded) {
@@ -286,7 +297,7 @@ const BlogList = ({ selectedCategory, onDataLoaded }) => {
       ? blogs
       : blogs.filter(
           (blog) =>
-            blog.categoryName?.toLowerCase() === selectedCategory?.toLowerCase()
+            blog.category?.toLowerCase() === selectedCategory?.toLowerCase()
         );
 
   if (isLoading) {
@@ -299,6 +310,47 @@ const BlogList = ({ selectedCategory, onDataLoaded }) => {
 
   return (
     <div className="relative">
+      {/* Category Filter */}
+      <div
+        className="container mx-auto px-4 mt-8 relative z-20"
+        data-aos="fade-up"
+        data-aos-duration="1500"
+      >
+        <div className="relative inline-block text-left">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="inline-flex justify-between items-center w-48 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#DBAF76]"
+          >
+            {selectedCategory}
+            <ChevronDown className="ml-2 h-4 w-4" />
+          </button>
+
+          {isDropdownOpen && (
+            <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+              <div className="py-1" role="menu">
+                {categories.map((category, index) => (
+                  <button
+                    key={`${category}-${index}`}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      selectedCategory === category
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-700"
+                    } hover:bg-gray-100`}
+                    role="menuitem"
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         {filteredBlogs.map((blog) => (
           <BlogCard key={blog._id} blog={blog} onViewPost={handleViewPost} />
@@ -312,4 +364,4 @@ const BlogList = ({ selectedCategory, onDataLoaded }) => {
   );
 };
 
-export default BlogList;
+export default Blogs;
