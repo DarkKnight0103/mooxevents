@@ -66,7 +66,7 @@ const BlogCard = ({ blog, onViewPost }) => {
         <div>
           <h2 className="text-lg font-medium mb-2">{blog.title}</h2>
           <p className="text-sm text-gray-600 mb-4">
-          {blog.description.split(" ").slice(0, 10).join(" ")}...
+            {blog.description.split(" ").slice(0, 10).join(" ")}...
           </p>
         </div>
         <div className="text-black font-medium flex items-center space-x-1 hover:underline cursor-pointer">
@@ -101,16 +101,26 @@ const BlogPopup = ({ blog, onClose }) => {
     }, 300);
   };
 
+  // Filter out empty or incomplete base64 images
+  const blogImages = [blog.photo1, blog.photo2, blog.photo3, blog.photo4, blog.photo5]
+    .filter(photo => {
+      // Check if the photo exists and is a valid base64 image
+      return photo && photo.startsWith('data:image') && photo.length > 100;
+    });
+
+  // Only show slider if there are multiple images
+  const showSlider = blogImages.length > 1;
+
   const sliderSettings = {
-    dots: true,
-    infinite: true,
+    dots: showSlider,
+    infinite: showSlider,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: showSlider,
     autoplaySpeed: 3000,
     pauseOnHover: true,
-    arrows: true,
+    arrows: showSlider,
   };
 
   useEffect(() => {
@@ -123,15 +133,6 @@ const BlogPopup = ({ blog, onClose }) => {
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
-
-  // Create an array of available photos
-  const blogImages = [
-    blog.photo1,
-    blog.photo2,
-    blog.photo3,
-    blog.photo4,
-    blog.photo5
-  ].filter(Boolean); // Filter out null/undefined values
 
   return (
     <div
@@ -154,18 +155,29 @@ const BlogPopup = ({ blog, onClose }) => {
             <X className="w-5 h-5 text-gray-600" />
           </button>
 
-          <Slider {...sliderSettings} className="blog-slider">
-            {blogImages.map((image, index) => (
-              <div key={index} className="relative h-[40vh]">
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent z-10"></div>
-                <img
-                  src={image}
-                  alt={`Slide ${index + 1}`}
-                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-            ))}
-          </Slider>
+          {showSlider ? (
+            <Slider {...sliderSettings} className="blog-slider">
+              {blogImages.map((image, index) => (
+                <div key={index} className="relative h-[40vh]">
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent z-10"></div>
+                  <img
+                    src={image}
+                    alt={`Slide ${index + 1}`}
+                    className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+              ))}
+            </Slider>
+          ) : (
+            <div className="relative h-[40vh]">
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent z-10"></div>
+              <img
+                src={blogImages[0]}
+                alt={blog.title}
+                className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          )}
         </div>
 
         <div className="p-6 overflow-y-auto">

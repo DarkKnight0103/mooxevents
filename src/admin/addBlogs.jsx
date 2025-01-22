@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import imageCompression from 'browser-image-compression';
 import { Plus, Upload, CheckCircle, XCircle, Loader, X } from "lucide-react";
 
 const BlogManagement = () => {
@@ -9,6 +10,7 @@ const BlogManagement = () => {
   const [notification, setNotification] = useState("");
   const [loading, setLoading] = useState(true);
   const [messageVisible, setMessageVisible] = useState(false);
+  const [error, setError] = useState("");
   const [newBlog, setNewBlog] = useState({
     title: "",
     description: "",
@@ -24,6 +26,27 @@ const BlogManagement = () => {
     photo4: null,
     photo5: null,
   });
+
+  // Image compression function
+  const compressImage = async (file) => {
+    if (!file) return null;
+
+    const options = {
+      maxSizeMB: 0.05, // 50KB = 0.05MB
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      // Convert to File object with original name and type
+      return new File([compressedFile], file.name, { type: file.type });
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      setError("Failed to compress image. Please try again.");
+      return null;
+    }
+  };
 
   const fetchBlogs = async () => {
     try {
@@ -116,6 +139,7 @@ const BlogManagement = () => {
         photo4: null,
         photo5: null,
       });
+      setError("");
 
       setMessageVisible(true);
       setTimeout(() => setMessageVisible(false), 2000);
@@ -173,17 +197,29 @@ const BlogManagement = () => {
     }
   };
 
-  const handleImageUpload = (e, field) => {
+  const handleImageUpload = async (e, field) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setNewBlog((prev) => ({
-          ...prev,
-          [field]: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Check if file size is greater than 50KB (51200 bytes)
+        const processedFile = file.size > 51200 ? await compressImage(file) : file;
+        
+        if (processedFile) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            setNewBlog((prev) => ({
+              ...prev,
+              [field]: reader.result,
+            }));
+          };
+          reader.readAsDataURL(processedFile);
+        }
+      } catch (error) {
+        console.error("Error handling file:", error);
+        setError("Failed to process image. Please try again.");
+        setMessageVisible(true);
+        setTimeout(() => setMessageVisible(false), 2000);
+      }
     }
   };
 
@@ -210,7 +246,10 @@ const BlogManagement = () => {
 
         {/* Add Blog Button */}
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setIsModalOpen(true);
+            setError("");
+          }}
           className="mb-8 bg-[#1a2a47] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#d6af53] focus:outline-none focus:ring-2 focus:ring-[#d6af53] focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
         >
           <Plus className="w-5 h-5" />
@@ -227,7 +266,10 @@ const BlogManagement = () => {
                     Add New Blog
                   </h3>
                   <button
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setError("");
+                    }}
                     className="text-gray-500 hover:text-[#d6af53]"
                   >
                     <X className="w-6 h-6" />
@@ -401,6 +443,12 @@ const BlogManagement = () => {
                       </div>
                     ))}
                   </div>
+
+                  {error && (
+                    <div className="p-3 bg-red-500 text-white rounded-lg text-sm text-center">
+                      {error}
+                    </div>
+                  )}
 
                   <button
                     type="submit"

@@ -351,7 +351,7 @@ const About = () => {
           {/* Call to Action */}
           <div className="mt-12 flex justify-center animate__animated animate__fadeIn animate__delay-4s">
             <a
-              href="#contact-us"
+              href="/contact"
               className="px-8 py-3 text-lg font-semibold bg-moox-gold text-moox-navy rounded-full hover:bg-moox-navy hover:text-white transition duration-300 ease-in-out"
             >
               Let's Plan Your Event

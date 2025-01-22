@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import imageCompression from 'browser-image-compression';
 import {
   Upload,
   CheckCircle,
@@ -27,6 +28,27 @@ const TeamManagement = () => {
   const [notification, setNotification] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [error, setError] = useState("");
+
+  const compressImage = async (file) => {
+    if (!file) return null;
+
+    const options = {
+      maxSizeMB: 0.05, // 50KB = 0.05MB
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      // Convert to File object with original name and type
+      return new File([compressedFile], file.name, { type: file.type });
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      setError("Failed to compress image. Please try again.");
+      return null;
+    }
+  };
 
   const fetchMembers = async () => {
     try {
@@ -65,15 +87,25 @@ const TeamManagement = () => {
     setNewMember({ ...newMember, [name]: value });
   };
 
-  const handlePhotoChange = (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-        setNewMember({ ...newMember, photo: reader.result.split(",")[1] });
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Compress the image if needed
+        const processedFile = await compressImage(file);
+        if (processedFile) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setPreviewImage(reader.result);
+            setNewMember({ ...newMember, photo: reader.result.split(",")[1] });
+          };
+          reader.readAsDataURL(processedFile);
+        }
+      } catch (error) {
+        console.error("Error processing image:", error);
+        setNotification("Failed to process image");
+        setTimeout(() => setNotification(""), 2000);
+      }
     }
   };
 
@@ -366,6 +398,13 @@ const TeamManagement = () => {
       {notification && (
         <div className="fixed bottom-4 right-4 bg-[#1a2a47] text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 animate-fade-in">
           {notification}
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 animate-fade-in">
+          {error}
         </div>
       )}
     </div>

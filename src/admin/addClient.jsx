@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import imageCompression from 'browser-image-compression';
 import { Plus, Upload, ImagePlus, Loader } from "lucide-react";
 import { set } from "rsuite/esm/internals/utils/date";
 
@@ -16,6 +17,28 @@ const ClientManagement = () => {
   const [loading, setLoading] = useState(true);
   const [messageVisible, setMessageVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [error, setError] = useState("");
+
+  // Image compression function
+  const compressImage = async (file) => {
+    if (!file) return null;
+
+    const options = {
+      maxSizeMB: 0.05, // 50KB = 0.05MB
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      // Convert to File object with original name and type
+      return new File([compressedFile], file.name, { type: file.type });
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      setError("Failed to compress image. Please try again.");
+      return null;
+    }
+  };
 
   // Fetch clients on component load
   useEffect(() => {
@@ -38,24 +61,32 @@ const ClientManagement = () => {
     fetchClients();
   }, []);
 
-  console.log(clients);
-
   // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle photo upload and convert to Base64
-  const handlePhotoChange = (e) => {
+  // Handle photo upload with compression
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-        setFormData({ ...formData, logo: reader.result.split(",")[1] }); // Store Base64 string
-      };
+      try {
+        // Check if file size is greater than 50KB (51200 bytes)
+        const compressedFile = file.size > 51200 ? await compressImage(file) : file;
+        
+        if (compressedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(compressedFile);
+          reader.onloadend = () => {
+            setPreviewImage(reader.result);
+            setFormData({ ...formData, logo: reader.result.split(",")[1] });
+          };
+        }
+      } catch (error) {
+        console.error("Error handling file:", error);
+        setError("Failed to process image. Please try again.");
+      }
     }
   };
 
@@ -77,7 +108,7 @@ const ClientManagement = () => {
           name: formData.name,
           active: true,
           user_id: localStorage.getItem("userid"),
-          logo: formData.logo,
+          photo: formData.logo,
         }
       );
 
@@ -86,6 +117,7 @@ const ClientManagement = () => {
       setFormData({ name: "", active: true, logo: "" });
       setPreviewImage(null);
       setShowPopup(false);
+      setError("");
 
       setMessageVisible(true);
       setTimeout(() => setMessageVisible(false), 2000);
@@ -231,13 +263,22 @@ const ClientManagement = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setShowPopup(false)}
+                        onClick={() => {
+                          setShowPopup(false);
+                          setError("");
+                        }}
                         className="flex-1 bg-gray-200 text-gray-800 py-3.5 px-4 rounded-lg font-semibold hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 transform transition-all duration-300 hover:scale-[1.02]"
                       >
                         Cancel
                       </button>
                     </div>
                   </form>
+
+                  {error && (
+                    <div className="mt-4 p-3 bg-red-500 text-white rounded-lg text-sm text-center animate-fade-in">
+                      {error}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -247,57 +288,57 @@ const ClientManagement = () => {
         {/* Clients Grid */}
         {loading ? (
           <div className="flex items-center justify-center h-64">
-          <Loader className="w-8 h-8 text-[#1a2a47] animate-spin" />
-      </div>
+            <Loader className="w-8 h-8 text-[#1a2a47] animate-spin" />
+          </div>
         ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {clients.map((client) => (
-            <div
-              key={client._id}
-              className="group relative h-[400px] bg-moox-navy rounded-2xl shadow-xl border border-[#d6af53]/10 overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:border-[#d6af53]/30"
-            >
-              {/* Full-size image with gradient overlay */}
-              <img
-                src={client.logo}
-                alt={client.name}
-                className="absolute justify-self-center ot inset-0 pt-10 w-64 h-fit object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-
-              {/* Status Badge */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {clients.map((client) => (
               <div
-                className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm ${
-                  client.active
-                    ? "bg-green-500/90 text-white"
-                    : "bg-red-500/90 text-white"
-                }`}
+                key={client._id}
+                className="group relative h-[400px] bg-moox-navy rounded-2xl shadow-xl border border-[#d6af53]/10 overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:border-[#d6af53]/30"
               >
-                {client.active ? "Active" : "Inactive"}
-              </div>
+                {/* Full-size image with gradient overlay */}
+                <img
+                  src={client.logo}
+                  alt={client.name}
+                  className="absolute justify-self-center ot inset-0 pt-10 w-64 h-fit object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
 
-              {/* Client Name */}
-              <div className="absolute bottom-20 left-6">
-                <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-                  {client.name}
-                </h3>
-              </div>
-
-              {/* Action Button */}
-              <div className="absolute bottom-6 left-6 right-6">
-                <button
-                  onClick={() => toggleStatus(client._id, client.active)}
-                  className={`w-full px-4 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl ${
+                {/* Status Badge */}
+                <div
+                  className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm ${
                     client.active
-                      ? "bg-red-500/90 text-white hover:bg-red-600"
-                      : "bg-green-500/90 text-white hover:bg-green-600"
+                      ? "bg-green-500/90 text-white"
+                      : "bg-red-500/90 text-white"
                   }`}
                 >
-                  {client.active ? "Deactivate Client" : "Activate Client"}
-                </button>
+                  {client.active ? "Active" : "Inactive"}
+                </div>
+
+                {/* Client Name */}
+                <div className="absolute bottom-20 left-6">
+                  <h3 className="text-2xl font-bold text-white drop-shadow-lg">
+                    {client.name}
+                  </h3>
+                </div>
+
+                {/* Action Button */}
+                <div className="absolute bottom-6 left-6 right-6">
+                  <button
+                    onClick={() => toggleStatus(client._id, client.active)}
+                    className={`w-full px-4 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl ${
+                      client.active
+                        ? "bg-red-500/90 text-white hover:bg-red-600"
+                        : "bg-green-500/90 text-white hover:bg-green-600"
+                    }`}
+                  >
+                    {client.active ? "Deactivate Client" : "Activate Client"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         )}
       </div>
 

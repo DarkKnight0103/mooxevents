@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import imageCompression from 'browser-image-compression';
 import { Trophy, Upload, CheckCircle, XCircle, Plus, ImagePlus, Calendar, Loader } from 'lucide-react';
-import { set } from 'rsuite/esm/internals/utils/date';
 
 const AchievementsManagement = () => {
     const ip = import.meta.env.VITE_IP;
@@ -16,6 +16,27 @@ const AchievementsManagement = () => {
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    const compressImage = async (file) => {
+        if (!file) return null;
+
+        const options = {
+            maxSizeMB: 0.05, // 50KB = 0.05MB
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+        };
+
+        try {
+            const compressedFile = await imageCompression(file, options);
+            // Convert to File object with original name and type
+            return new File([compressedFile], file.name, { type: file.type });
+        } catch (error) {
+            console.error("Error compressing image:", error);
+            setError("Failed to compress image. Please try again.");
+            return null;
+        }
+    };
 
     const fetchAchievements = async () => {
         try {
@@ -81,6 +102,28 @@ const AchievementsManagement = () => {
     useEffect(() => {
         fetchAchievements();
     }, []);
+
+    const handlePhotoChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                // Compress the image if needed
+                const processedFile = await compressImage(file);
+                if (processedFile) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        setPreviewImage(reader.result);
+                        setNewAchievement({ ...newAchievement, photo: reader.result });
+                    };
+                    reader.readAsDataURL(processedFile);
+                }
+            } catch (error) {
+                console.error("Error processing image:", error);
+                setError("Failed to process image");
+                setTimeout(() => setError(""), 2000);
+            }
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#FDF8DA] p-4 sm:p-6 lg:p-8">
@@ -176,14 +219,7 @@ const AchievementsManagement = () => {
                                             <input
                                                 type="file"
                                                 accept="image/*"
-                                                onChange={(e) => {
-                                                    const reader = new FileReader();
-                                                    reader.onload = () => {
-                                                        setPreviewImage(reader.result);
-                                                        setNewAchievement({ ...newAchievement, photo: reader.result });
-                                                    };
-                                                    reader.readAsDataURL(e.target.files[0]);
-                                                }}
+                                                onChange={handlePhotoChange}
                                                 required
                                                 className="hidden"
                                                 id="achievement-photo"
@@ -231,78 +267,84 @@ const AchievementsManagement = () => {
                 {/* Achievements Grid */}
                 {loading ? (
                     <div className="flex items-center justify-center h-64">
-                    <Loader className="w-8 h-8 text-[#1a2a47] animate-spin" />
-                </div>
+                        <Loader className="w-8 h-8 text-[#1a2a47] animate-spin" />
+                    </div>
                 ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {achievements.map((achievement) => (
-                        <div
-                            key={achievement._id}
-                            className="group relative h-[400px] bg-white rounded-2xl shadow-xl border border-[#d6af53]/10 overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:border-[#d6af53]/30"
-                        >
-                            {/* Full-size image with gradient overlay */}
-                            <img
-                                src={achievement.photo}
-                                alt={achievement.title}
-                                className="absolute inset-0 w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
-                            {/* Status Badge */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {achievements.map((achievement) => (
                             <div
-                                className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm ${
-                                    achievement.active
-                                        ? "bg-green-500/90 text-white"
-                                        : "bg-red-500/90 text-white"
-                                }`}
+                                key={achievement._id}
+                                className="group relative h-[400px] bg-white rounded-2xl shadow-xl border border-[#d6af53]/10 overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:border-[#d6af53]/30"
                             >
-                                {achievement.active ? "Active" : "Inactive"}
-                            </div>
+                                <img
+                                    src={achievement.photo}
+                                    alt={achievement.title}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-                            {/* Achievement Content */}
-                            <div className="absolute bottom-20 left-6 right-6">
-                                <h3 className="text-2xl font-bold text-white drop-shadow-lg mb-2">
-                                    {achievement.title}
-                                </h3>
-                                <p className="text-white/90 line-clamp-2 text-md mb-2">
-                                    {achievement.description}
-                                </p>
-                                <div className="flex items-center gap-2 text-white/80">
-                                    <Calendar className="w-4 h-4" />
-                                    <span className="text-sm">
-                                        {new Date(achievement.event_date).toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Action Button */}
-                            <div className="absolute bottom-6 right-6">
-                                <button
-                                    onClick={() => handleToggleStatus(achievement._id, achievement.active)}
-                                    className={`flex items-center gap-2 px-4 h-10 rounded-full transition-all duration-300 ${
+                                {/* Status Badge */}
+                                <div
+                                    className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm ${
                                         achievement.active
-                                            ? "bg-[#1a2a47]/80 text-white hover:bg-[#d6af53]"
-                                            : "bg-[#d6af53]/80 text-white hover:bg-[#1a2a47]"
+                                            ? "bg-green-500/90 text-white"
+                                            : "bg-red-500/90 text-white"
                                     }`}
                                 >
-                                    {achievement.active ? (
-                                        <>
-                                            <XCircle className="w-5 h-5" />
-                                            <span>Deactivate</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <CheckCircle className="w-5 h-5" />
-                                            <span>Activate</span>
-                                        </>
-                                    )}
-                                </button>
+                                    {achievement.active ? "Active" : "Inactive"}
+                                </div>
+
+                                {/* Achievement Content */}
+                                <div className="absolute bottom-20 left-6 right-6">
+                                    <h3 className="text-2xl font-bold text-white drop-shadow-lg mb-2">
+                                        {achievement.title}
+                                    </h3>
+                                    <p className="text-white/90 line-clamp-2 text-md mb-2">
+                                        {achievement.description}
+                                    </p>
+                                    <div className="flex items-center gap-2 text-white/80">
+                                        <Calendar className="w-4 h-4" />
+                                        <span className="text-sm">
+                                            {new Date(achievement.event_date).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Action Button */}
+                                <div className="absolute bottom-6 right-6">
+                                    <button
+                                        onClick={() => handleToggleStatus(achievement._id, achievement.active)}
+                                        className={`flex items-center gap-2 px-4 h-10 rounded-full transition-all duration-300 ${
+                                            achievement.active
+                                                ? "bg-[#1a2a47]/80 text-white hover:bg-[#d6af53]"
+                                                : "bg-[#d6af53]/80 text-white hover:bg-[#1a2a47]"
+                                        }`}
+                                    >
+                                        {achievement.active ? (
+                                            <>
+                                                <XCircle className="w-5 h-5" />
+                                                <span>Deactivate</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle className="w-5 h-5" />
+                                                <span>Activate</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
                 )}
             </div>
+
+            {/* Error Message */}
+            {error && (
+                <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 animate-fade-in">
+                    {error}
+                </div>
+            )}
         </div>
     );
 };

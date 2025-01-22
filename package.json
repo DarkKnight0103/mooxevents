@@ -19,6 +19,7 @@
     "animate.css": "^4.1.1",
     "aos": "^2.3.4",
     "axios": "^1.7.8",
+    "browser-image-compression": "^2.0.2",
     "canvas": "^3.0.1",
     "crypto-js": "^4.2.0",
     "flag-icon-css": "^4.1.7",

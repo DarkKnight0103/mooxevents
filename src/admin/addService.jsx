@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import imageCompression from 'browser-image-compression';
 import {
   Upload,
   CheckCircle,
@@ -27,6 +28,28 @@ const AddService = () => {
   const [currentServiceId, setCurrentServiceId] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Image compression function
+  const compressImage = async (file) => {
+    if (!file) return null;
+
+    const options = {
+      maxSizeMB: 0.05, // 50KB = 0.05MB
+      maxWidthOrHeight: 1024,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      // Convert to File object with original name and type
+      return new File([compressedFile], file.name, { type: file.type });
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      setError("Failed to compress image. Please try again.");
+      return null;
+    }
+  };
 
   // Fetch all services when the component mounts
   useEffect(() => {
@@ -60,34 +83,45 @@ const AddService = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-        setFormData({ ...formData,image:reader.result.split(",")[1]});
-      };
+      try {
+        // Check if file size is greater than 50KB (51200 bytes)
+        const compressedFile = file.size > 51200 ? await compressImage(file) : file;
+        
+        if (compressedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(compressedFile);
+          reader.onloadend = () => {
+            setPreviewImage(reader.result);
+            setImage(compressedFile);
+            setFormData({ ...formData, image: reader.result.split(",")[1] });
+          };
+        }
+      } catch (error) {
+        console.error("Error handling file:", error);
+        setError("Failed to process image. Please try again.");
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!image) {
+    if (!formData.image) {
       if (!currentServiceId) {
-      setMessage("Please upload a image.");
-      setMessageVisible(true);
-      setTimeout(() => setMessageVisible(false), 1000);
-      return;
+        setMessage("Please upload a image.");
+        setMessageVisible(true);
+        setTimeout(() => setMessageVisible(false), 1000);
+        return;
+      } else { 
+        setMessage("Please upload a image again.");
+        setMessageVisible(true);
+        setTimeout(() => setMessageVisible(false), 1000);
+        return;
+      }
     }
-  else { 
-    setMessage("Please upload a image again.");
-    setMessageVisible(true);
-    setTimeout(() => setMessageVisible(false), 1000);
-    return;
-  }}
 
     try {
       const userId = localStorage.getItem("userid");
@@ -97,7 +131,7 @@ const AddService = () => {
         user_id: userId,
         name: formData.name,
         description: formData.description,
-        image: formData.image,
+        photo: formData.image, // Changed from 'image' to 'photo'
       };
 
       if (currentServiceId) {
@@ -118,9 +152,9 @@ const AddService = () => {
       }
 
       setCurrentServiceId(null);
-      setServices((prevServices) => [...prevServices, response.data.service]);
       setFormData({ title: "", description: "", image: "" });
       setPreviewImage(null);
+      setImage(null);
       setIsFormVisible(false);
       setMessageVisible(true);
       setTimeout(() => setMessageVisible(false), 2000);
@@ -135,12 +169,12 @@ const AddService = () => {
     }
   };
 
-    const handleEdit = (service) => {
-      setFormData({ name: service.title, description: service.status, image: service.image });
-      setCurrentServiceId(service.id);
-      setPreviewImage(service.image);
-      setIsFormVisible(true);
-    };
+  const handleEdit = (service) => {
+    setFormData({ name: service.title, description: service.status, image: service.image });
+    setCurrentServiceId(service.id);
+    setPreviewImage(service.image);
+    setIsFormVisible(true);
+  };
 
   const handleStatusChange = async (serviceId, currentStatus) => {
     try {
@@ -224,7 +258,7 @@ const AddService = () => {
             setIsFormVisible(!isFormVisible);
             if (!isFormVisible) {
               setCurrentServiceId(null);
-              setFormData({ title: "", description: "" });
+              setFormData({ title: "", description: "", image: "" });
               setImage(null);
               setPreviewImage(null);
             }
@@ -347,6 +381,12 @@ const AddService = () => {
                 {message && (
                   <div className="mt-4 p-3 bg-[#1a2a47] text-white rounded-lg text-sm text-center animate-fade-in">
                     {message}
+                  </div>
+                )}
+
+                {error && (
+                  <div className="mt-4 p-3 bg-red-500 text-white rounded-lg text-sm text-center animate-fade-in">
+                    {error}
                   </div>
                 )}
               </div>
