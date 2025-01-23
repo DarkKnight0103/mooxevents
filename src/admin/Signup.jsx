@@ -204,7 +204,7 @@ const Signup = () => {
                                         placeholder="Create a password"
                                     />
                                     <div
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 "
                                         onClick={() => setPasswordVisible(!passwordVisible)}
                                     >
                                         {passwordVisible ? (

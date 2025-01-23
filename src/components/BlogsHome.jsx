@@ -69,9 +69,8 @@ const BlogCard = ({ blog, onViewPost }) => {
             {blog.description.split(" ").slice(0, 10).join(" ")}...
           </p>
         </div>
-        <div className="text-black font-medium flex items-center space-x-1 hover:underline cursor-pointer">
-          <button onClick={() => onViewPost(blog)}>View Post</button>
-          <svg
+        <div className="text-black font-medium flex items-center space-x-1 hover:underline ">
+          <button onClick={() => onViewPost(blog)} className="flex flex-row gap-1 items-center">View Post  <svg
             className="w-4 h-4 -rotate-45"
             fill="none"
             stroke="currentColor"
@@ -84,7 +83,8 @@ const BlogCard = ({ blog, onViewPost }) => {
               strokeLinejoin="round"
               d="M14 5l7 7m0 0l-7 7m7-7H3"
             ></path>
-          </svg>
+          </svg></button>
+         
         </div>
       </div>
     </div>

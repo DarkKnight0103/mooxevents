@@ -81,7 +81,7 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
               {column.map((item, itemIndex) => (
                 <div
                   key={`${columnIndex}-${itemIndex}`}
-                  className="relative group cursor-pointer animate-photoAppear break-inside-avoid"
+                  className="relative group  animate-photoAppear break-inside-avoid"
                   onClick={() => openModal(item)}
                 >
                   {item.type === "image" ? (

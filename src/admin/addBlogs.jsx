@@ -400,7 +400,7 @@ const BlogManagement = () => {
                       />
                       <label
                         htmlFor="profile-photo"
-                        className="flex items-center justify-center w-full h-32 border-2 border-dashed border-[#d6af53]/30 rounded-lg cursor-pointer hover:border-[#d6af53]"
+                        className="flex items-center justify-center w-full h-32 border-2 border-dashed border-[#d6af53]/30 rounded-lg  hover:border-[#d6af53]"
                       >
                         {newBlog.profile_photo ? (
                           <img
@@ -428,7 +428,7 @@ const BlogManagement = () => {
                         />
                         <label
                           htmlFor={`photo-${num}`}
-                          className="flex items-center justify-center w-full h-32 border-2 border-dashed border-[#d6af53]/30 rounded-lg cursor-pointer hover:border-[#d6af53]"
+                          className="flex items-center justify-center w-full h-32 border-2 border-dashed border-[#d6af53]/30 rounded-lg  hover:border-[#d6af53]"
                         >
                           {newBlog[`photo${num}`] ? (
                             <img

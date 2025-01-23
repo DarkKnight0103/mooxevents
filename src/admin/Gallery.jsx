@@ -260,7 +260,7 @@ const GalleryManagement = () => {
                         />
                         <label
                           htmlFor="gallery-photo"
-                          className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-[#d6af53]/30 rounded-lg cursor-pointer hover:border-[#d6af53] transition-all duration-200"
+                          className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-[#d6af53]/30 rounded-lg  hover:border-[#d6af53] transition-all duration-200"
                         >
                           {previewImage ? (
                             <div className="relative w-full aspect-video">
