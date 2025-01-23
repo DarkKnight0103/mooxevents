@@ -253,20 +253,18 @@ const BlogList = ({ selectedCategory, onDataLoaded }) => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const user_id = localStorage.getItem("userid");
-        if (!user_id) {
-          console.error("User not authenticated");
-          setIsLoading(false);
-          return;
-        }
-
         const response = await axios.post(
-          `${ip}/moox_events/api/blogs/get-blogs`,
-          { user_id }
+          `${ip}/moox_events/api/blogs/get-all-blogs`,
+          {}
         );
 
-        // Filter only active blogs
-        const activeBlogs = response.data.blogs.filter(blog => blog.active);
+        console.log("Blogs:", response.data.blogs);
+
+        // Filter only active blogs and get the last 6
+        const activeBlogs = response.data.blogs
+          .filter(blog => blog.active)
+          .slice(-6);
+          
         setBlogs(activeBlogs);
         setIsLoading(false);
         

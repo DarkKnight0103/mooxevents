@@ -7,35 +7,36 @@ import Loader from '../components/Loader';
 import axios from 'axios';
 
 const Career = () => {
-  const [isLoading, setIsLoading] = useState(true); // Show loader initially
-  const [showLoader, setShowLoader] = useState(true); // Track loader visibility
+  const [isLoading, setIsLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
   const [positions, setPositions] = useState([]);
-  const [selectedPosition, setSelectedPosition] = useState(null); // To store the selected position for the popup
-  const [popupData, setPopupData] = useState({ name: '', email: '', mobileno: '' });
+  const [selectedPosition, setSelectedPosition] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [popupData, setPopupData] = useState({ 
+    name: '', 
+    email: '', 
+    mobileno: '',
+    countryCode: '+91'
+  });
   const ip = import.meta.env.VITE_IP;
 
   useEffect(() => {
-    // Initialize the animation once loader is hidden
     if (!showLoader) {
       AOS.init({ duration: 1000, once: true });
       AOS.refresh();
     }
   }, [showLoader]);
 
-  // Fetching positions from the backend
   useEffect(() => {
     const fetchPositions = async () => {
       try {
         const response = await axios.post(`${ip}/moox_events/api/career/jobs`);
         const data = response.data;
 
-        // Log the response to verify the format
         console.log('API Response:', data);
 
-        // Access the 'events' array from the response object
         const positionsArray = data.events;
 
-        // Check if positionsArray is an array before calling map
         if (Array.isArray(positionsArray)) {
           const formattedPositions = positionsArray.map(position => ({
             ...position,
@@ -48,24 +49,30 @@ const Career = () => {
       } catch (error) {
         console.error('Error fetching positions:', error);
       } finally {
-        // Hide loader when API data is fetched and processed
         setTimeout(() => setIsLoading(false), 1000);
         setTimeout(() => setShowLoader(false), 1000);
-         // Ensure loader disappears after everything is loaded
       }
     };
 
     fetchPositions();
   }, []);
 
-  // Handle Apply Now button click
   const handleApplyNow = (positionId) => {
-    // Set the selected position ID in the state to show the popup
     const position = positions.find(p => p._id === positionId);
     setSelectedPosition(position);
   };
 
-  // Handle form submission
+  const handleCCChange = (e) => {
+    const value = e.target.value;
+  
+    if (value === "+" || /^\+\d*$/.test(value)) {
+      setPopupData(prevData => ({
+        ...prevData,
+        countryCode: value || "+91",
+      }));
+    }
+  };
+
   const handleSubmitApplication = async () => {
     if (!popupData.name || !popupData.email || !popupData.mobileno) {
       alert('Please fill in all the fields');
@@ -74,11 +81,10 @@ const Career = () => {
 
     const applicationData = {
       ...popupData,
-      position_id: selectedPosition._id
+      position_id: selectedPosition._id,
+      mobileno: `${popupData.countryCode} ${popupData.mobileno}`
     };
 
-    // Here you would send the application data to your backend
-    // Example POST request
     try {
       const response = await fetch(`${ip}/moox_events/api/career/apply`, {
         method: 'POST',
@@ -88,14 +94,19 @@ const Career = () => {
         body: JSON.stringify(applicationData),
       });
       const result = await response.json();
-      alert(result.message || 'Application submitted successfully!');
+      
+      // Set success message and close popup after delay
+      setSuccessMessage(result.message || 'Application submitted successfully!');
+      setSelectedPosition(null);
+      setPopupData({ name: '', email: '', mobileno: '', countryCode: '+91' });
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
     } catch (error) {
       alert('There was an error submitting your application.');
     }
-
-    // Close the popup after submission
-    setSelectedPosition(null);
-    setPopupData({ name: '', email: '', mobileno: '' });
   };
 
   return (
@@ -107,6 +118,13 @@ const Career = () => {
       )}
       <Menu />
       <div className="min-h-screen flex flex-col font-parkin bg-gray-100">
+        {/* Success Message */}
+        {successMessage && (
+          <div className="fixed bottom-10 right-10 bg-green-500 text-white p-4 rounded-lg shadow-lg z-[9999] animate-fade-in-out">
+            <p>{successMessage}</p>
+          </div>
+        )}
+
         {/* Header Section */}
         <div className="bg-gray-900 h-96 text-white text-center py-16 flex items-center justify-center flex-col px-4" data-aos="fade-down" data-aos-duration="1500">
           <h1 className="text-4xl md:text-5xl font-bold text-white font-parkin">Career at Moox Events</h1>
@@ -205,15 +223,38 @@ const Career = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="mobileno" className="block text-sm font-semibold">Mobile</label>
-                  <input
-                    type="text"
-                    id="mobileno"
-                    value={popupData.mobileno}
-                    onChange={(e) => setPopupData({ ...popupData, mobileno: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                    required
-                  />
+                  <label htmlFor="mobileno" className="block text-sm font-semibold">Mobile Number</label>
+                  <div className="flex gap-0.5">
+                    {/* Country Code Input */}
+                    <input
+                      type="text"
+                      id="countryCode"
+                      name="countryCode"
+                      value={popupData.countryCode}
+                      onChange={handleCCChange}
+                      className="px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#DBAF76] w-[100px]"
+                      maxLength={5}
+                      placeholder="+"
+                      pattern="\+\d*"
+                      title="Please enter a valid country code (e.g., +91)"
+                    />
+
+                    {/* Mobile Number Input */}
+                    <input
+                      type="text"
+                      id="mobileno"
+                      value={popupData.mobileno}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        if (value.length <= 10) {
+                          setPopupData({ ...popupData, mobileno: value });
+                        }
+                      }}
+                      className="w-full p-2 border border-gray-300 rounded-r-md"
+                      placeholder="Your Mobile Number"
+                      required
+                    />
+                  </div>
                 </div>
                 <button
                   type="submit"

@@ -131,6 +131,7 @@ const Menu = () => {
           <div className="flex flex-col items-center md:flex-row gap-3 md:gap-5 mt-10 md:mt-0">
             <animated.a
               href="https://www.instagram.com/mooxevents/"
+              target="_blank"
               style={trail[items.length - 2]}
               className="font-parkin font-bold text-lg sm:text-xl text-[#DBAF76] lg:text-2xl hover:text-white transition duration-300"
               onMouseEnter={(e) =>
@@ -142,6 +143,7 @@ const Menu = () => {
             </animated.a>
             <animated.a
               href="https://www.facebook.com/mooxevents/"
+              target="_blank"
               style={trail[items.length - 1]}
               className="font-parkin font-bold text-lg sm:text-xl text-[#DBAF76] lg:text-2xl hover:text-white transition duration-300"
               onMouseEnter={(e) =>

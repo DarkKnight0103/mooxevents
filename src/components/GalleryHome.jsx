@@ -28,12 +28,15 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
           `${ip}/moox_events/api/gallery/get-all-photos`
         );
         const data = response.data;
-        console.log("Gallery items:",data);
+        console.log("Gallery items:", data);
 
         if (data.clients) {
-          const items = data.clients.map((client) => ({
+          // Get only the last 10 items from the clients array
+          const lastTenClients = data.clients.slice(-10);
+          const items = lastTenClients.map((client) => ({
             type: client.logo ? "image" : "video",
             src: client.logo,
+            description: client.description
           }));
           setGalleryItems(items);
           setLoading(false);
@@ -69,7 +72,7 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
     <div className="container mx-auto px-4 py-12">
       {loading ? (
         <div className="flex items-center justify-center min-h-[200px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#DBAF76]"></div>
+          <Loader2 className="h-8 w-8 animate-spin text-[#DBAF76]" />
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -85,12 +88,13 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
                     <div className="relative">
                       <img
                         src={item.src}
-                        alt={`Gallery item ${itemIndex + 1}`}
+                        alt={item.description || `Gallery item ${itemIndex + 1}`}
                         className="w-full h-auto rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-50 transition-all duration-300">
+                          <ZoomIn className="text-white w-6 h-6" />
                         </div>
                       </div>
                     </div>
@@ -100,6 +104,9 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
                         <source src={item.src} type="video/mp4" />
                       </video>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-50 transition-all duration-300">
+                          <ZoomIn className="text-white w-6 h-6" />
+                        </div>
                       </div>
                     </div>
                   )}
@@ -124,13 +131,15 @@ const GalleryHome = ({ onGalleryLoadComplete }) => {
               onClick={closeModal}
               className="absolute -top-12 right-0 p-2 text-white/70 hover:text-white transition-colors duration-200"
             >
+              <span className="sr-only">Close modal</span>
+              ×
             </button>
 
             <div className="flex items-center justify-center">
               {modalContent?.type === "image" ? (
                 <img
                   src={modalContent.src}
-                  alt="Modal Content"
+                  alt={modalContent.description || "Modal Content"}
                   className="max-h-[80vh] w-auto object-contain rounded-lg animate-scaleIn"
                 />
               ) : (

@@ -256,16 +256,9 @@ const Blogs = ({ onDataLoaded }) => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const user_id = localStorage.getItem("userid");
-        if (!user_id) {
-          console.error("User not authenticated");
-          setIsLoading(false);
-          return;
-        }
-
         const response = await axios.post(
-          `${ip}/moox_events/api/blogs/get-blogs`,
-          { user_id }
+          `${ip}/moox_events/api/blogs/get-all-blogs`,
+          {}  // Empty object as we don't need to send user_id anymore
         );
 
         // Filter only active blogs

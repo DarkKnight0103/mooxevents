@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { TypeAnimation } from "react-type-animation";
+import { Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const HomeSlider = () => {
+const ComingSoon = () => {
   const slides = [
     { image: "/img1.jpg" },
     { image: "/img2.jpg" },
     { image: "/img3.jpg" },
   ];
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isScrolled, setIsScrolled] = useState(false); // State to track scroll position
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
@@ -18,12 +20,9 @@ const HomeSlider = () => {
     return () => clearInterval(slideInterval);
   }, [slides.length]);
 
-  // Scroll effect to toggle logo and backdrop blur
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-
-      // Add backdrop-blur when user scrolls
       setIsScrolled(scrollTop > 10);
     };
 
@@ -55,14 +54,15 @@ const HomeSlider = () => {
       <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-row items-center justify-center w-full"></div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center h-full w-full px-8">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full w-full px-8">
         {/* Logo Section */}
-        <div className="lg:w-1/2 flex justify-center items-center mb-10 lg:mb-0">
+        <div className="mb-10">
           <img
             src="/logo.png"
             alt="Logo"
-            className={`w-1/3 md:w-1/4 lg:w-2/5 transition-opacity duration-300 ${ 
-              isScrolled ? "opacity-0 " : "opacity-100"}`}
+            className={`w-32 md:w-40 lg:w-48 transition-opacity duration-300 ${
+              isScrolled ? "opacity-0" : "opacity-100"
+            }`}
             style={{
               filter: "drop-shadow(0px 3px 7px rgba(255, 255, 255, 0.3))",
             }}
@@ -70,32 +70,32 @@ const HomeSlider = () => {
         </div>
 
         {/* Text Content Section */}
-        <div className="lg:w-1/2 text-white text-center lg:text-left space-y-6 flex items-center justify-center flex-col">
-          {/* Heading */}
-          <p
-            className="text-4xl md:text-5xl lg:text-6xl font-bold"
+        <div className="text-white text-center space-y-6">
+          {/* Coming Soon Text */}
+          <h1
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4"
             style={{
               textShadow:
                 "0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)",
             }}
           >
-            Want to
-          </p>
+            Coming Soon
+          </h1>
 
           {/* Type Animation */}
           <TypeAnimation
             sequence={[
-              "create unforgettable weddings?",
-              2200, // 1800ms typing + 2200ms pause
-              "host standout corporate events?",
+              "Creating unforgettable moments",
               2200,
-              "throw unforgettable parties?",
+              "Crafting unique experiences",
               2200,
-              "craft lasting memories?",
+              "Building lasting memories",
+              2200,
+              "Launching something special",
               2200,
             ]}
             wrapper="span"
-            speed={60} // 60ms per character
+            speed={60}
             style={{
               fontSize: "1.5rem",
               display: "inline-block",
@@ -103,10 +103,23 @@ const HomeSlider = () => {
             }}
             repeat={Infinity}
           />
+
         </div>
+          {/* Preview Link */}
+          <div className="fixed bottom-5 right-5">
+            <Link
+              to="/live"
+              className="text-white transition-colors"
+              // style={{
+              //   textShadow: "0 0 5px rgba(255, 255, 255, 0.7)",
+              // }}
+            >
+              <Eye className="size-5"/>
+            </Link>
+          </div>
       </div>
     </div>
   );
 };
 
-export default HomeSlider;
+export default ComingSoon;
