@@ -12,7 +12,7 @@ import Dashboard from "./admin/Dashboard";
 import Login from "./admin/Login";
 import Signup from "./admin/Signup";
 import VerifyOTP from "./admin/VerifyOTP";
-// import ComingSoon from "./components/ComingSoon";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Redirect to home for invalid routes
 const NotFoundRedirect = () => {
@@ -61,9 +61,9 @@ const VerifyRoute = ({ children }) => {
 const AppRoutes = () => {
   return (
     <Router>
+      <ScrollToTop /> {/* ScrollToTop component */}
       <Routes>
         {/* Public Routes */}
-        {/* <Route path="/" element={<ComingSoon />} /> */}
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/inquiry" element={<Inquiry />} />
@@ -73,10 +73,6 @@ const AppRoutes = () => {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/signup" element={<Signup />} />
-        <Route path="/admin/verify" element={<VerifyOTP />} />
-        <Route path="/admin" element={<Dashboard />} />
-
         {/* Guarded Routes */}
         <Route
           path="/admin/verify"
