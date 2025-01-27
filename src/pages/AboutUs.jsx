@@ -7,6 +7,7 @@ import Loader from "../components/Loader";
 import ClientHome from "../components/ClientHome";
 import TeamHome from "../components/TeamHome";
 import VisionMission from "../components/VisionMission";
+import AchivHome from "../components/AchivHome";
 
 const AboutUs = () => {
   const [isLoading, setIsLoading] = useState(true); // Track if data is still loading
@@ -95,6 +96,45 @@ const AboutUs = () => {
         </div>
         {/* Vision & Mission Section */}
         <VisionMission />
+
+                {/* OUT TEAM  */}
+                <div className="w-full pt-16">
+          <div className="text-center w-full max-w-3xl mx-auto">
+            {/* Our Services Heading */}
+            <div
+              id="team-heading"
+              className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000`}
+            >
+              MEET THE TEAM
+            </div>
+
+            {/* Horizontal line animation */}
+            <div
+              className={`mt-4 w-80  mx-auto h-1 bg-gray-500 transform transition-all duration-1000 `}
+            ></div>
+          </div>
+          <TeamHome />
+        </div>
+        
+        {/* OUT TEAM  */}
+        <div className="bg-white w-full pt-16 pb-10">
+          <div className="text-center w-full max-w-3xl mx-auto">
+            {/* Our Services Heading */}
+            <div
+              id="team-heading"
+              className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000`}
+            >
+              MOMENTS & JOURNEY
+            </div>
+
+            {/* Horizontal line animation */}
+            <div
+              className={`mt-4 w-80  mx-auto h-1 bg-gray-500 transform transition-all duration-1000 `}
+            ></div>
+          </div>
+          <AchivHome />
+        </div>
+
         {/* ClientHome Component */}
         <div
           className="text-center text-gray-900 font-parkin text-5xl font-bold pt-16"
@@ -112,25 +152,6 @@ const AboutUs = () => {
         <ClientHome onDataLoaded={handleDataLoaded} />{" "}
         {/* Pass handleDataLoaded prop */}
         {/* Footer Component */}
-        </div>
-        
-        {/* OUT TEAM  */}
-        <div className="bg-white w-full pt-16">
-          <div className="text-center w-full max-w-3xl mx-auto">
-            {/* Our Services Heading */}
-            <div
-              id="team-heading"
-              className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000`}
-            >
-              MEET THE TEAM
-            </div>
-
-            {/* Horizontal line animation */}
-            <div
-              className={`mt-4 w-80  mx-auto h-1 bg-gray-500 transform transition-all duration-1000 `}
-            ></div>
-          </div>
-          <TeamHome />
         </div>
         <Footer />
       </div>

@@ -12,7 +12,7 @@ import Dashboard from "./admin/Dashboard";
 import Login from "./admin/Login";
 import Signup from "./admin/Signup";
 import VerifyOTP from "./admin/VerifyOTP";
-import ComingSoon from "./components/ComingSoon";
+// import ComingSoon from "./components/ComingSoon";
 
 // Redirect to home for invalid routes
 const NotFoundRedirect = () => {
@@ -63,8 +63,8 @@ const AppRoutes = () => {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<ComingSoon />} />
-        <Route path="/live" element={<Home />} />
+        {/* <Route path="/" element={<ComingSoon />} /> */}
+        <Route path="/" element={<Home />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/inquiry" element={<Inquiry />} />
         <Route path="/career" element={<Career />} />
