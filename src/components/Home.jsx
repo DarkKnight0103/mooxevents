@@ -245,7 +245,7 @@ const Home = () => {
         </div>
 
         {/* EVENT HOME SECTION  */}
-        <div className="w-full py-16">
+        {/* <div className="w-full py-16">
           <div className="text-center w-full max-w-3xl mx-auto">
 
             <div
@@ -262,13 +262,21 @@ MEMORABLE STORIES
               }`}
             ></div>
           </div>
+<<<<<<< Updated upstream
           <EventHome />
         </div>
 
                 {/* OUR ACHIVMENTS SECTION */}
         <div className="w-full py-16">
+=======
+          <br/>
+          <Blogs />
+        </div> */}
+
+        {/* OUR ACHIVMENTS SECTION */}
+        {/* <div className="w-full py-16">
+>>>>>>> Stashed changes
           <div className="text-center w-full max-w-3xl mx-auto">
-            {/* Our Services Heading */}
             <div
               id="achiv-heading"
               className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000 ${
@@ -277,8 +285,6 @@ MEMORABLE STORIES
             >
   ACHIEVEMENTS
             </div>
-
-            {/* Horizontal line animation */}
             <div
               className={`mt-4 w-10 md:w-20 mx-auto h-1 bg-gray-500 transform transition-all duration-1000 ${
                 achivInView ? 'animate-widthExpand' : 'opacity-0'
@@ -286,7 +292,7 @@ MEMORABLE STORIES
             ></div>
           </div>
           <AchivHome />
-        </div>
+        </div> */}
 
           {/* OUR CLIENTS  */}
           <div className="w-full py-16">

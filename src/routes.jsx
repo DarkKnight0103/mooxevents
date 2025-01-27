@@ -12,6 +12,10 @@ import Dashboard from "./admin/Dashboard";
 import Login from "./admin/Login";
 import Signup from "./admin/Signup";
 import VerifyOTP from "./admin/VerifyOTP";
+<<<<<<< Updated upstream
+=======
+import ScrollToTop from "./components/ScrollToTop";
+>>>>>>> Stashed changes
 
 // Redirect to home for invalid routes
 const NotFoundRedirect = () => {
@@ -60,6 +64,7 @@ const VerifyRoute = ({ children }) => {
 const AppRoutes = () => {
   return (
     <Router>
+      <ScrollToTop /> {/* ScrollToTop component */}
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
@@ -71,8 +76,11 @@ const AppRoutes = () => {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/admin/login" element={<Login />} />
+<<<<<<< Updated upstream
         <Route path="/admin/signup" element={<Signup />} />
 
+=======
+>>>>>>> Stashed changes
         {/* Guarded Routes */}
         <Route
           path="/admin/verify"

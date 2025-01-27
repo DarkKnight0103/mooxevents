@@ -127,6 +127,10 @@ const HomeSlider = () => {
     return () => clearInterval(slideInterval);
   }, [slides.length]);
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Background Image Carousel */}
@@ -148,12 +152,13 @@ const HomeSlider = () => {
       </div>
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-row items-center justify-center w-full"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-row items-center justify-center w-full"></div>
 
       {/* Content */}
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center h-full w-full px-8">
         {/* Logo Section */}
         <div className="lg:w-1/2 flex justify-center items-center mb-10 lg:mb-0">
+<<<<<<< Updated upstream
         <img
   src="/logo.png"
   alt="Logo"
@@ -163,6 +168,17 @@ const HomeSlider = () => {
   }}
 />
 
+=======
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className={`w-1/3 md:w-1/4 lg:w-2/5 transition-opacity duration-300 ${ 
+              isScrolled ? "opacity-0 " : "opacity-100"}`}
+            style={{
+              // filter: "drop-shadow(0px 3px 7px rgba(255, 255, 255, 0.3))",
+            }}
+          />
+>>>>>>> Stashed changes
         </div>
 
         {/* Text Content Section */}
@@ -172,7 +188,7 @@ const HomeSlider = () => {
             className="text-4xl md:text-5xl lg:text-6xl font-bold"
             style={{
               textShadow:
-                "0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)",
+                "0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.2)",
             }}
           >
             Want to

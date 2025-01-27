@@ -42,9 +42,18 @@ const Events = () => {
           <p className="text-lg md:text-xl mt-2">Crafted an amazing memories using our extraordinary skills.</p>
         </div>
 
+<<<<<<< Updated upstream
         {/* Breadcrumbs */}
         <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-up">
           <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
+=======
+        <nav
+          className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6"
+          data-aos="fade-down"
+          data-aos-duration="1500"
+        >
+          {/* <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
+>>>>>>> Stashed changes
             <li>
               <a href="/" className="hover:text-[#785322]">
                 Home
@@ -56,7 +65,7 @@ const Events = () => {
                 Events
               </a>
             </li>
-          </ol>
+          </ol> */}
         </nav>
 
         {/* Pass handleDataLoaded as a prop to EventHome */}

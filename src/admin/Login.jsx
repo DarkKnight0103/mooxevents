@@ -156,6 +156,7 @@ const Login = () => {
       </button>
     </form>
 
+<<<<<<< Updated upstream
     {errorMessage && (
       <p className="mt-4 text-sm text-red-500 text-center">{errorMessage}</p>
     )}
@@ -166,6 +167,19 @@ const Login = () => {
     )}
   </div>
 </div>
+=======
+                            {/* <div className="text-center">
+                                <button
+                                    type="button"
+                                    onClick={handlePageChange}
+                                    className="text-[#1a2a47] hover:text-[#d6af53] text-sm font-medium inline-flex items-center gap-1.5 transition-colors duration-200 group"
+                                >
+                                    New Here? Create an Account
+                                    <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200" />
+                                </button>
+                            </div> */}
+                        </form>
+>>>>>>> Stashed changes
 
     );
 };

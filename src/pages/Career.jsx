@@ -114,8 +114,13 @@ const Career = () => {
         </div>
 
         {/* Breadcrumb Section */}
+<<<<<<< Updated upstream
         <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-up">
           <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
+=======
+        <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-down" data-aos-duration="1500">
+          {/* <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
+>>>>>>> Stashed changes
             <li>
               <a href="/" className="hover:text-[#785322]">Home</a>
             </li>
@@ -123,7 +128,7 @@ const Career = () => {
             <li>
               <a href="/career" className="hover:text-[#785322]">Careers</a>
             </li>
-          </ol>
+          </ol> */}
         </nav>
 
         {/* Why Choose Moox Events Section */}

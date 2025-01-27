@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useState } from 'react';
 import Footer from '../components/Footer';
 import Menu from '../components/Menu';
@@ -5,6 +6,18 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Loader from '../components/Loader';
 import ClientHome from '../components/ClientHome';
+=======
+import React, { useEffect, useState } from "react";
+import Footer from "../components/Footer";
+import Menu from "../components/Menu";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import Loader from "../components/Loader";
+import ClientHome from "../components/ClientHome";
+import TeamHome from "../components/TeamHome";
+import VisionMission from "../components/VisionMission";
+import AchivHome from "../components/AchivHome";
+>>>>>>> Stashed changes
 
 const AboutUs = () => {
   const [isLoading, setIsLoading] = useState(true); // Track if data is still loading
@@ -44,7 +57,7 @@ const AboutUs = () => {
 
         {/* Breadcrumbs */}
         <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6">
-          <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
+          {/* <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
             <li>
               <a href="/" className="hover:text-[#785322]">
                 Home
@@ -56,7 +69,7 @@ const AboutUs = () => {
                 About Us
               </a>
             </li>
-          </ol>
+          </ol> */}
         </nav>
 
         {/* Description Section */}
@@ -72,6 +85,59 @@ const AboutUs = () => {
             </div>
           </div>
         </div>
+<<<<<<< Updated upstream
+=======
+        {/* Vision & Mission Section */}
+        <VisionMission />
+        {/* ClientHome Component */}
+        <div
+          className="text-center text-gray-900 font-parkin text-5xl font-bold pt-16"
+          data-aos="fade-up" // Fade-up animation for the heading
+          data-aos-duration="1000" // Duration for the heading animation
+          data-aos-delay="200" // Slight delay for the heading animation
+        >
+          OUR CLIENTS
+        <div
+          className={`mt-4 w-80 mx-auto h-1 bg-gray-500 transform transition-all duration-1000`}
+          data-aos="zoom-in" // Zoom-in animation for the underline
+          data-aos-duration="1000" // Duration for the underline animation
+          data-aos-delay="400" // Delay for the underline animation (after heading)
+        ></div>
+        <ClientHome onDataLoaded={handleDataLoaded} />{" "}
+        {/* Pass handleDataLoaded prop */}
+        {/* Footer Component */}
+        </div>
+        
+        {/* OUT Achivments Section  */}
+        <div className="bg-white w-full pt-16">
+          <div className="text-center w-full max-w-3xl mx-auto">
+            {/* Our Services Heading */}
+            <div
+              id="team-heading"
+              className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000`}
+            >
+              MOMENTS & JOURNEY
+            </div>
+
+            {/* Horizontal line animation */}
+            <div
+              className={`mt-4 w-80  mx-auto h-1 bg-gray-500 transform transition-all duration-1000 `}
+            ></div>
+          </div>
+          <AchivHome />
+        </div>
+
+        {/* OUT TEAM  */}
+        <div className="w-full pt-16">
+          <div className="text-center w-full max-w-3xl mx-auto">
+            {/* Our Services Heading */}
+            <div
+              id="team-heading"
+              className={`text-4xl md:text-6xl font-bold text-gray-800 transform transition-all duration-1000`}
+            >
+              MEET THE TEAM
+            </div>
+>>>>>>> Stashed changes
 
         {/* ClientHome Component */}
         <div className="text-center text-gray-900 py-12 font-parkin text-5xl font-bold">

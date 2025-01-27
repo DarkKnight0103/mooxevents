@@ -49,8 +49,13 @@ const Service = () => {
         </div>
 
         {/* Breadcrumbs */}
+<<<<<<< Updated upstream
         <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-up">
           <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
+=======
+        <nav className="bg-[#DBAF76] py-3 px-4 md:py-4 md:px-6" data-aos="fade-down" data-aos-duration="2000">
+          {/* <ol className="flex flex-wrap space-x-2 md:space-x-4 text-sm md:text-base text-white">
+>>>>>>> Stashed changes
             <li>
               <a href="/" className="hover:text-[#785322]">
                 Home
@@ -62,7 +67,7 @@ const Service = () => {
                 Services
               </a>
             </li>
-          </ol>
+          </ol> */}
         </nav>
 
         {/* Service Description */}
